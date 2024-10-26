@@ -1,0 +1,43 @@
+.scroll-сontainer {
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+}
+
+.scroll-bg {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 8px;
+  height: 100%;
+  background-color: #2F2F37;
+  pointer-events: none;
+}
+
+.scroll-content {
+  height: 100%;
+  overflow-y: auto;
+  box-sizing: content-box;
+}
+
+.scroll-content::-webkit-scrollbar {
+  width: 0;
+}
+
+.scroll-content {
+  scrollbar-width: none;
+}
+
+.scroll-content {
+  -ms-overflow-style: none;
+}
+
+.scroll-thumb {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 8px;
+  background-color: #8585AD;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
