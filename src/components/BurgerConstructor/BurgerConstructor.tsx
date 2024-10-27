@@ -1,12 +1,18 @@
+import React from 'react';
 import { Button, ConstructorElement, CurrencyIcon, DragIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import styles from './BurgerConstructor.module.css';
-import { Ingredient } from '../../types/Ingredient';
-import data from '../../utils/data.ts';
+import { iIngredient } from '../../types/Ingredient';
 import CustomScrollbar from '../CustomScrollbar/CustomScrollbar.tsx';
 
-const BurgerConstructor = () => {
+const BurgerConstructor: React.FC<{ data: iIngredient[] }> = ({ data }) => {
+  if (!data || data.length === 0) {
+    return (
+      <div className="text text_type_main-default text_color_inactive text-align_center">Нет ингредиентов</div>
+    );
+  }
+
   const buns = data[0];
-  const ingredients = [data[5], data[4], data[7], data[8], data[8], data[4], data[7], data[8], data[8], data[4], data[7], data[8], data[8], data[4], data[7], data[8], data[8], data[4], data[7], data[8], data[8], data[4], data[7], data[8], data[8], data[4], data[7], data[8], data[8]];
+  const currentIngredients = [data[5], data[4], data[7], data[8], data[8], data[4], data[7], data[8], data[8], data[4], data[7], data[8], data[8], data[4], data[7], data[8], data[8], data[4], data[7], data[8], data[8], data[4], data[7], data[8], data[8], data[4], data[7], data[8], data[8]];
 
   return (
     <section className={`${styles['burger-ingredients']} max-width_600px width_100 display_grid height_auto overflow_hidden mt-25`}>
@@ -23,8 +29,11 @@ const BurgerConstructor = () => {
         </div>
         <div className="mt-4 mb-4 height_auto overflow_hidden">
           <CustomScrollbar>
-            {ingredients.map((item: Ingredient, index: number) => (
-              <div className={`${styles['burger-ingredient']} position_relative display_flex align-items_center justify-content_end pl-8 pr-4 pb-2 pt-2`}>
+            {currentIngredients.map((item: iIngredient, index: number) => (
+              <div
+                key={item._id + '_' + index}
+                className={`${styles['burger-ingredient']} position_relative display_flex align-items_center justify-content_end pl-8 pr-4 pb-2 pt-2`}
+              >
                 <DragIcon type="primary" className={`${styles['burger-dragdrop']} cursor_pointer position_absolute`} />
                 <ConstructorElement
                   text={item.name}

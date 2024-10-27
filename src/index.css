@@ -91,6 +91,16 @@
     position: absolute;
 }
 
+.position_fixed {
+    position: fixed;
+}
+
+.position_fixed--centered {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
 .cursor_pointer {
     cursor: pointer;
 }

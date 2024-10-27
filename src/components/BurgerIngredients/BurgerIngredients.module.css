@@ -1,3 +1,11 @@
 .ingredients_item {
     width: calc(50% - 24px);
 }
+
+.modal_title {
+    line-height: 64px;
+}
+
+.info_item {
+    height: 56px;
+}
