@@ -1,4 +1,4 @@
-export interface Ingredient {
+export interface iIngredient {
   _id: string;
   name: string;
   type: string;
