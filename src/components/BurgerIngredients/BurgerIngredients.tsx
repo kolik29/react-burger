@@ -3,8 +3,7 @@ import { Tab, CurrencyIcon, Counter } from '@ya.praktikum/react-developer-burger
 import styles from './BurgerIngredients.module.css';
 import { iIngredient } from '../../types/Ingredient';
 import CustomScrollBar from '../CustomScrollbar/CustomScrollbar.tsx';
-import Modal from '../Modal/Modal.tsx';
-import ModalOverlay from '../ModalOverlay/ModalOverlay.tsx';
+import IngredientDetails from '../IngredientDetails/IngredientDetails.tsx';
 
 const IngredientItem: React.FC<{ item: iIngredient, count: number, onClick: () => void }> = ({ item, count, onClick }) => (
   <div
@@ -12,12 +11,9 @@ const IngredientItem: React.FC<{ item: iIngredient, count: number, onClick: () =
     className={`${styles.ingredients_item} mr-3 ml-3 mb-8 position_relative`}
     onClick={onClick}
   >
-    {
-      count > 0 &&
-      <Counter count={count} size="default" />
-    }
+    {count > 0 && <Counter count={count} size="default" />}
     <div className='display_flex justify-content_center'>
-      <img src={item.image} className='width_100' alt={item.name} width="240" height="120" />
+      <img src={item.image} alt={item.name} width="240" height="120" />
     </div>
     <div className='display_flex justify-content_center mt-1 mb-1'>
       <bdi className='display_flex align-items_center text text_type_digits-default'>
@@ -31,15 +27,10 @@ const IngredientItem: React.FC<{ item: iIngredient, count: number, onClick: () =
 )
 
 const BurgerIngredients: React.FC<{ data: iIngredient[] }> = ({ data }) => {
-  if (!data || data.length === 0) {
-    return (
-      <div className="text text_type_main-default text_color_inactive text-align_center">Нет ингредиентов</div>
-    );
-  }
-  
   const [current, setCurrent] = React.useState('buns');
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [selectedIngredient, setSelectedIngredient] = React.useState<iIngredient | null>(null);
+  const [ingredientCounts, setIngredientCounts] = React.useState<{ [id: string]: number }>({});
 
   const buns = data.filter((item: any) => item.type === 'bun');
   const sauces = data.filter((item: any) => item.type === 'sauce');
@@ -56,14 +47,32 @@ const BurgerIngredients: React.FC<{ data: iIngredient[] }> = ({ data }) => {
       tabBuns.current.scrollIntoView({ behavior: 'smooth' });
     } else if (element === 'sauces' && tabSauces.current) {
       tabSauces.current.scrollIntoView({ behavior: 'smooth' });
-    } else if (element === 'ingedients' && tabIngredients.current) {
+    } else if (element === 'ingredients' && tabIngredients.current) {
       tabIngredients.current.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
+  React.useEffect(() => {
+    const counts: { [id: string]: number } = data.reduce(
+      (acc: { [id: string]: number }, item: iIngredient) => {
+        acc[item._id] = Math.floor(Math.random() * 5) + 1;
+        return acc;
+      },
+      {}
+    );
+    setIngredientCounts(counts);
+  }, [data, isModalOpen, selectedIngredient]);
+  
+  if (!data || data.length === 0) {
+    return (
+      <div className="display_flex justify-content_center align-items_center width_100 pt-10 pb-10">
+        <div className="text text_type_main-default text_color_inactive text-align_center">Нет ингредиентов</div>
+      </div>
+    );
+  }
+
   const handleOpenModal = (item: iIngredient) => {
     setIsModalOpen(true);
-    console.log(item)
     setSelectedIngredient(item);
   };
 
@@ -71,47 +80,6 @@ const BurgerIngredients: React.FC<{ data: iIngredient[] }> = ({ data }) => {
     setIsModalOpen(false);
     setSelectedIngredient(null);
   };
-
-  const modal = (
-    <>
-      <ModalOverlay
-        isOpen={isModalOpen}
-        onClick={handleCloseModal}
-      />
-      <Modal
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-      >
-        {selectedIngredient ? (
-          <div className="pt-10 pr-10 pl-10 pb-15">
-            <div className={`${styles.modal_title} text text_type_main-large`}>Детали ингредиента</div>
-            <img src={selectedIngredient.image} className='width_100' alt={selectedIngredient.name} width="480" height="240" />
-            <p className='text-align_center height_48px text text_type_main-medium'>{selectedIngredient.name}</p>
-            <div className="info display_flex justify-content_center text text_type_main-default text_color_inactive text-align_center">
-              <div className={`${styles.info_item} display_flex flex-direction_column justify-content_space-between mr-5`}>
-                <div>Калории, ккал</div>
-                <div>{selectedIngredient.calories}</div>
-              </div>
-              <div className={`${styles.info_item} display_flex flex-direction_column justify-content_space-between mr-5`}>
-                <div>Белки, г</div>
-                <div>{selectedIngredient.proteins}</div>
-              </div>
-              <div className={`${styles.info_item} display_flex flex-direction_column justify-content_space-between mr-5`}>
-                <div>Жиры, г</div>
-                <div>{selectedIngredient.fat}</div>
-              </div>
-              <div className={`${styles.info_item} display_flex flex-direction_column justify-content_space-between`}>
-                <div>Углеводы, г</div>
-                <div>{selectedIngredient.carbohydrates}</div>
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div className="text text_type_main-default text_color_inactive text-align_center">Ингредиент не выбран</div> // Сообщение, если ингредиент не выбран
-        )}
-      </Modal>
-    </>
-  );
 
   return (
     <>
@@ -124,7 +92,7 @@ const BurgerIngredients: React.FC<{ data: iIngredient[] }> = ({ data }) => {
           <Tab value="sauces" active={current === 'sauces'} onClick={() => scrollToElement('sauces')}>
             Соусы
           </Tab>
-          <Tab value="ingedients" active={current === 'ingedients'} onClick={() => scrollToElement('ingedients')}>
+          <Tab value="ingredients" active={current === 'ingredients'} onClick={() => scrollToElement('ingredients')}>
             Начинки
           </Tab>
         </div>
@@ -138,7 +106,7 @@ const BurgerIngredients: React.FC<{ data: iIngredient[] }> = ({ data }) => {
                     <IngredientItem
                       key={item._id}
                       item={item}
-                      count={Math.floor(Math.random() * 5)}
+                      count={ingredientCounts[item._id]}
                       onClick={() => handleOpenModal(item)}
                     />
                   ))
@@ -153,7 +121,7 @@ const BurgerIngredients: React.FC<{ data: iIngredient[] }> = ({ data }) => {
                     <IngredientItem
                       key={item._id}
                       item={item}
-                      count={Math.floor(Math.random() * 5)}
+                      count={ingredientCounts[item._id]}
                       onClick={() => handleOpenModal(item)}
                     />
                   ))
@@ -168,7 +136,7 @@ const BurgerIngredients: React.FC<{ data: iIngredient[] }> = ({ data }) => {
                     <IngredientItem
                       key={item._id}
                       item={item}
-                      count={Math.floor(Math.random() * 5)}
+                      count={ingredientCounts[item._id]}
                       onClick={() => handleOpenModal(item)}
                     />
                   ))
@@ -178,7 +146,7 @@ const BurgerIngredients: React.FC<{ data: iIngredient[] }> = ({ data }) => {
           </CustomScrollBar>
         </div>
       </section>
-      {modal}
+      {(isModalOpen && selectedIngredient) ? <IngredientDetails ingredient={selectedIngredient} isModalOpen={isModalOpen} onClose={handleCloseModal} /> : null}
     </>
   );
 };
