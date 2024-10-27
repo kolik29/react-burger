@@ -25,8 +25,8 @@ const CustomScrollBar: React.FC<{ children: React.ReactNode }> = ({ children }) 
     }
   }, []);
 
-  const thumbHeight = scrollHeight > 0 ? (containerHeight / scrollHeight) * containerHeight : 0;
-  const thumbTop = scrollHeight > 0 ? (scrollTop / scrollHeight) * (containerHeight - thumbHeight) : 0;
+  const thumbHeight = Math.max((containerHeight / scrollHeight) * containerHeight, 30)
+  const thumbTop = (scrollTop / (scrollHeight - containerHeight)) * (containerHeight - thumbHeight);
 
   const scrollThumbStyle = {
     height: `${thumbHeight}px`,
