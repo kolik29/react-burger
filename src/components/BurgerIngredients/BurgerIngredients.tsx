@@ -4,6 +4,7 @@ import styles from './BurgerIngredients.module.css';
 import { IIngredient } from '../../types/Ingredient';
 import CustomScrollBar from '../CustomScrollbar/CustomScrollbar.tsx';
 import IngredientDetails from '../IngredientDetails/IngredientDetails.tsx';
+import { useModal } from '../../hooks/useModal.tsx';
 
 const IngredientItem: React.FC<{ item: IIngredient, count: number, onClick: () => void }> = ({ item, count, onClick }) => (
   <div
@@ -27,8 +28,9 @@ const IngredientItem: React.FC<{ item: IIngredient, count: number, onClick: () =
 )
 
 const BurgerIngredients: React.FC<{ data: IIngredient[] }> = ({ data }) => {
+  const { isModalOpen, openModal, closeModal } = useModal();
+
   const [current, setCurrent] = React.useState('buns');
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [selectedIngredient, setSelectedIngredient] = React.useState<IIngredient | null>(null);
   const [ingredientCounts, setIngredientCounts] = React.useState<{ [id: string]: number }>({});
 
@@ -72,12 +74,12 @@ const BurgerIngredients: React.FC<{ data: IIngredient[] }> = ({ data }) => {
   }
 
   const handleOpenModal = (item: IIngredient) => {
-    setIsModalOpen(true);
+    openModal();
     setSelectedIngredient(item);
   };
 
   const handleCloseModal = () => {
-    setIsModalOpen(false);
+    closeModal();
     setSelectedIngredient(null);
   };
 
@@ -102,7 +104,7 @@ const BurgerIngredients: React.FC<{ data: IIngredient[] }> = ({ data }) => {
               <h2 className='text text_type_main-medium'>Булки</h2>
               <div className='display_flex pr-1 pl-1 pt-6 pb-2 flex-wrap_wrap'>
                 {
-                  buns.map((item: any) => (
+                  buns.map((item) => (
                     <IngredientItem
                       key={item._id}
                       item={item}
@@ -117,7 +119,7 @@ const BurgerIngredients: React.FC<{ data: IIngredient[] }> = ({ data }) => {
               <h2 className='text text_type_main-medium'>Соусы</h2>
               <div className='display_flex pr-1 pl-1 pt-6 pb-2 flex-wrap_wrap'>
                 {
-                  sauces.map((item: any) => (
+                  sauces.map((item) => (
                     <IngredientItem
                       key={item._id}
                       item={item}
@@ -132,7 +134,7 @@ const BurgerIngredients: React.FC<{ data: IIngredient[] }> = ({ data }) => {
               <h2 className='text text_type_main-medium'>Начинки</h2>
               <div className='display_flex pr-1 pl-1 pt-6 pb-2 flex-wrap_wrap'>
                 {
-                  ingredients.map((item: any) => (
+                  ingredients.map((item) => (
                     <IngredientItem
                       key={item._id}
                       item={item}

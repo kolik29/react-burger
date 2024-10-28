@@ -7,11 +7,8 @@ import ModalOverlay from '../ModalOverlay/ModalOverlay';
 
 const Modal: React.FC<IModal> = ({ isModalOpen, onClose, children }: any) => {
   const modalRoot = document.getElementById('modal-root');
-  const [isOpen, setIsOpen] = React.useState(false);
 
   React.useEffect(() => {
-    setIsOpen(isModalOpen);
-
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         onClose();
@@ -24,14 +21,13 @@ const Modal: React.FC<IModal> = ({ isModalOpen, onClose, children }: any) => {
       document.removeEventListener('keydown', handleKeyDown);
     };
   }, [isModalOpen, onClose]);
-  
-  if (!isOpen || !modalRoot) {
-    return null;
-  }
 
   const onClickHandler = () => {
-    setIsOpen(false);
     onClose();
+  }
+
+  if (!modalRoot) {
+    return null;
   }
   
   return ReactDOM.createPortal(

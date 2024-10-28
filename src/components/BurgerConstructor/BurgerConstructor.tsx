@@ -4,8 +4,22 @@ import styles from './BurgerConstructor.module.css';
 import { IIngredient } from '../../types/Ingredient';
 import CustomScrollbar from '../CustomScrollbar/CustomScrollbar.tsx';
 import OrderDetails from '../OrderDetails/OrderDetails.tsx';
+import { useModal } from '../../hooks/useModal.tsx';
 
 const BurgerConstructor: React.FC<{ data: IIngredient[] }> = ({ data }) => {
+  const { isModalOpen, openModal, closeModal } = useModal();
+  const [orderCode, setOrderCode] = React.useState<string | null>(null);
+
+  const handleOpenModal = () => {
+    openModal();
+    setOrderCode(Math.round(Math.random() * 10000).toString().padStart(6, '0'));
+  };
+
+  const handleCloseModal = () => {
+    closeModal();
+    setOrderCode(null);
+  };
+
   if (!data || data.length === 0) {
     return (
       <div className="display_flex justify-content_center align-items_center width_100 pt-10 pb-10">
@@ -16,19 +30,6 @@ const BurgerConstructor: React.FC<{ data: IIngredient[] }> = ({ data }) => {
 
   const buns = data[0];
   const currentIngredients = [data[5], data[4], data[7], data[8], data[8], data[4], data[7], data[8], data[8], data[4], data[7], data[8], data[8], data[4], data[7], data[8], data[8], data[4], data[7], data[8], data[8], data[4], data[7], data[8], data[8], data[4], data[7], data[8], data[8]];
-
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
-  const [orderCode, setOrderCode] = React.useState<string | null>(null);
-
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
-    setOrderCode(Math.round(Math.random() * 10000).toString().padStart(6, '0'));
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setOrderCode(null);
-  };
 
   return (
     <>
