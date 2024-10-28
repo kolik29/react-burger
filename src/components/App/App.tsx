@@ -2,10 +2,10 @@ import React from 'react';
 import AppHeader from '../AppHeader/AppHeader';
 import BurgerIngredients from '../BurgerIngredients/BurgerIngredients';
 import BurgerConstructor from '../BurgerConstructor/BurgerConstructor';
-import { iIngredient } from '../../types/Ingredient';
+import { IIngredient } from '../../types/Ingredient';
 
 function App() {
-  const [ingredients, setIngredients] = React.useState<iIngredient[]>([])
+  const [ingredients, setIngredients] = React.useState<IIngredient[]>([])
   const url = 'https://norma.nomoreparties.space'
 
   const fetchIngredients = React.useCallback(async () => {
@@ -39,7 +39,6 @@ function App() {
           </div>
         </main>
       </div>
-      <div id="modal-root"></div>
     </>
   )
 }

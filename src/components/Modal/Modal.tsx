@@ -2,10 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import styles from './Modal.module.css';
 import { CloseIcon } from '@ya.praktikum/react-developer-burger-ui-components';
-import { iModal } from '../../types/Modal';
+import { IModal } from '../../types/Modal';
 import ModalOverlay from '../ModalOverlay/ModalOverlay';
 
-const Modal: React.FC<iModal> = ({ isModalOpen, onClose, children }: any) => {
+const Modal: React.FC<IModal> = ({ isModalOpen, onClose, children }: any) => {
   const modalRoot = document.getElementById('modal-root');
   const [isOpen, setIsOpen] = React.useState(false);
 

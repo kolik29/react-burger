@@ -1,9 +1,8 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import styles from './ModalOverlay.module.css';
-import { iModal } from '../../types/Modal';
+import { IModal } from '../../types/Modal';
 
-const ModalOverlay: React.FC<iModal> = ({ isModalOpen, onClose }) => {
+const ModalOverlay: React.FC<IModal> = ({ isModalOpen, onClose }) => {
   const modalRoot = document.getElementById('modal-root');
   const [isOpen, setIsOpen] = React.useState(false);
 
@@ -20,11 +19,9 @@ const ModalOverlay: React.FC<iModal> = ({ isModalOpen, onClose }) => {
     onClose();
   }
   
-  return ReactDOM.createPortal(
-    (
+  return (
       <div className={styles.modal_overlay} onClick={onClickHandler}></div>
-    ), modalRoot
-  );
+  )
 };
 
 export default ModalOverlay;

@@ -5,9 +5,9 @@ import order_done__bg1 from '../../images/order_done__bg1.svg';
 import order_done__bg2 from '../../images/order_done__bg2.svg';
 import order_done__bg3 from '../../images/order_done__bg3.svg';
 import { CheckMarkIcon } from '@ya.praktikum/react-developer-burger-ui-components';
-import { iOrderDetails } from '../../types/OrderDetails';
+import { IOrderDetails } from '../../types/OrderDetails';
 
-const OrderDetails: React.FC<iOrderDetails> = ({ isModalOpen, onClose, orderCode }) => {
+const OrderDetails: React.FC<IOrderDetails> = ({ isModalOpen, onClose, orderCode }) => {
   return (
     <Modal isModalOpen={isModalOpen} onClose={onClose}>
       <div className="pt-30 pb-30 pr-20 pl-20">

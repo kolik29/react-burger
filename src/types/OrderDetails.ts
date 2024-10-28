@@ -1,5 +1,5 @@
-import { iModal } from "./Modal";
+import { IModal } from "./Modal";
 
-export interface iOrderDetails extends iModal {
+export interface IOrderDetails extends IModal {
     orderCode: string
 }

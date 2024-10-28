@@ -1,9 +1,9 @@
 import React from 'react';
 import Modal from '../Modal/Modal';
 import styles from './IngredientDetails.module.css';
-import { iIngredientDetails } from '../../types/IngredientDetails';
+import { IIngredientDetails } from '../../types/IngredientDetails';
 
-const IngredientDetails: React.FC<iIngredientDetails> = ({ isModalOpen, onClose, ingredient }) => {
+const IngredientDetails: React.FC<IIngredientDetails> = ({ isModalOpen, onClose, ingredient }) => {
   return (
     <>
       <Modal isModalOpen={isModalOpen} onClose={onClose}>

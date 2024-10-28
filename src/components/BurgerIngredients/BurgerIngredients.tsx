@@ -1,11 +1,11 @@
 import React from 'react';
 import { Tab, CurrencyIcon, Counter } from '@ya.praktikum/react-developer-burger-ui-components';
 import styles from './BurgerIngredients.module.css';
-import { iIngredient } from '../../types/Ingredient';
+import { IIngredient } from '../../types/Ingredient';
 import CustomScrollBar from '../CustomScrollbar/CustomScrollbar.tsx';
 import IngredientDetails from '../IngredientDetails/IngredientDetails.tsx';
 
-const IngredientItem: React.FC<{ item: iIngredient, count: number, onClick: () => void }> = ({ item, count, onClick }) => (
+const IngredientItem: React.FC<{ item: IIngredient, count: number, onClick: () => void }> = ({ item, count, onClick }) => (
   <div
     key={item._id}
     className={`${styles.ingredients_item} mr-3 ml-3 mb-8 position_relative`}
@@ -26,10 +26,10 @@ const IngredientItem: React.FC<{ item: iIngredient, count: number, onClick: () =
   </div>
 )
 
-const BurgerIngredients: React.FC<{ data: iIngredient[] }> = ({ data }) => {
+const BurgerIngredients: React.FC<{ data: IIngredient[] }> = ({ data }) => {
   const [current, setCurrent] = React.useState('buns');
   const [isModalOpen, setIsModalOpen] = React.useState(false);
-  const [selectedIngredient, setSelectedIngredient] = React.useState<iIngredient | null>(null);
+  const [selectedIngredient, setSelectedIngredient] = React.useState<IIngredient | null>(null);
   const [ingredientCounts, setIngredientCounts] = React.useState<{ [id: string]: number }>({});
 
   const buns = data.filter((item: any) => item.type === 'bun');
@@ -54,7 +54,7 @@ const BurgerIngredients: React.FC<{ data: iIngredient[] }> = ({ data }) => {
 
   React.useEffect(() => {
     const counts: { [id: string]: number } = data.reduce(
-      (acc: { [id: string]: number }, item: iIngredient) => {
+      (acc: { [id: string]: number }, item: IIngredient) => {
         acc[item._id] = Math.floor(Math.random() * 5) + 1;
         return acc;
       },
@@ -71,7 +71,7 @@ const BurgerIngredients: React.FC<{ data: iIngredient[] }> = ({ data }) => {
     );
   }
 
-  const handleOpenModal = (item: iIngredient) => {
+  const handleOpenModal = (item: IIngredient) => {
     setIsModalOpen(true);
     setSelectedIngredient(item);
   };

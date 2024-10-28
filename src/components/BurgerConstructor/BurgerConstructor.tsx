@@ -1,11 +1,11 @@
 import React from 'react';
 import { Button, ConstructorElement, CurrencyIcon, DragIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import styles from './BurgerConstructor.module.css';
-import { iIngredient } from '../../types/Ingredient';
+import { IIngredient } from '../../types/Ingredient';
 import CustomScrollbar from '../CustomScrollbar/CustomScrollbar.tsx';
 import OrderDetails from '../OrderDetails/OrderDetails.tsx';
 
-const BurgerConstructor: React.FC<{ data: iIngredient[] }> = ({ data }) => {
+const BurgerConstructor: React.FC<{ data: IIngredient[] }> = ({ data }) => {
   if (!data || data.length === 0) {
     return (
       <div className="display_flex justify-content_center align-items_center width_100 pt-10 pb-10">
@@ -46,7 +46,7 @@ const BurgerConstructor: React.FC<{ data: iIngredient[] }> = ({ data }) => {
           </div>
           <div className="mt-4 mb-4 height_auto overflow_hidden">
             <CustomScrollbar>
-              {currentIngredients.map((item: iIngredient, index: number) => (
+              {currentIngredients.map((item: IIngredient, index: number) => (
                 <div
                   key={item._id + '_' + index}
                   className={`${styles['burger-ingredient']} position_relative display_flex align-items_center justify-content_end pl-8 pr-4 pb-2 pt-2`}

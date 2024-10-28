@@ -1,6 +1,6 @@
-import { iIngredient } from "./Ingredient";
-import { iModal } from "./Modal";
+import { IIngredient } from "./Ingredient";
+import { IModal } from "./Modal";
 
-export interface iIngredientDetails extends iModal {
-    ingredient: iIngredient
+export interface IIngredientDetails extends IModal {
+    ingredient: IIngredient
 }
