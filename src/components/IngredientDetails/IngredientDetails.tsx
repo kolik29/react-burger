@@ -1,12 +1,10 @@
 import React from 'react';
-import Modal from '../Modal/Modal';
 import styles from './IngredientDetails.module.css';
-import { IIngredientDetails } from '../../types/IngredientDetails';
+import { IIngredient } from '../../types/Ingredient';
 
-const IngredientDetails: React.FC<IIngredientDetails> = ({ isModalOpen, onClose, ingredient }) => {
+const IngredientDetails: React.FC<{ ingredient: IIngredient }> = ({ ingredient }) => {
   return (
     <>
-      <Modal isModalOpen={isModalOpen} onClose={onClose}>
         {ingredient ? (
           <div className="pt-10 pr-10 pl-10 pb-15">
             <div className={`${styles.modal_title} text text_type_main-large`}>Детали ингредиента</div>
@@ -32,7 +30,6 @@ const IngredientDetails: React.FC<IIngredientDetails> = ({ isModalOpen, onClose,
             </div>
           </div>
         ) : null}
-      </Modal>
     </>
   )
 }

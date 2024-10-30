@@ -5,6 +5,7 @@ import { IIngredient } from '../../types/Ingredient';
 import CustomScrollbar from '../CustomScrollbar/CustomScrollbar.tsx';
 import OrderDetails from '../OrderDetails/OrderDetails.tsx';
 import { useModal } from '../../hooks/useModal.tsx';
+import Modal from '../Modal/Modal.tsx';
 
 const BurgerConstructor: React.FC<{ data: IIngredient[] }> = ({ data }) => {
   const { isModalOpen, openModal, closeModal } = useModal();
@@ -89,7 +90,12 @@ const BurgerConstructor: React.FC<{ data: IIngredient[] }> = ({ data }) => {
           </div>
         </div>
       </section>
-      {(isModalOpen && orderCode) && <OrderDetails isModalOpen={isModalOpen} onClose={handleCloseModal} orderCode={orderCode} />}
+      {
+        (isModalOpen && orderCode) &&
+          <Modal isModalOpen={isModalOpen} onClose={handleCloseModal}>
+            <OrderDetails orderCode={orderCode} />
+          </Modal>
+      }
     </>
   );
 };

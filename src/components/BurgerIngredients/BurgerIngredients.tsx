@@ -5,6 +5,7 @@ import { IIngredient } from '../../types/Ingredient';
 import CustomScrollBar from '../CustomScrollbar/CustomScrollbar.tsx';
 import IngredientDetails from '../IngredientDetails/IngredientDetails.tsx';
 import { useModal } from '../../hooks/useModal.tsx';
+import Modal from '../Modal/Modal.tsx';
 
 const IngredientItem: React.FC<{ item: IIngredient, count: number, onClick: () => void }> = ({ item, count, onClick }) => (
   <div
@@ -148,7 +149,12 @@ const BurgerIngredients: React.FC<{ data: IIngredient[] }> = ({ data }) => {
           </CustomScrollBar>
         </div>
       </section>
-      {(isModalOpen && selectedIngredient) ? <IngredientDetails ingredient={selectedIngredient} isModalOpen={isModalOpen} onClose={handleCloseModal} /> : null}
+      {
+        (isModalOpen && selectedIngredient) &&
+          <Modal isModalOpen={isModalOpen} onClose={handleCloseModal}>
+            <IngredientDetails ingredient={selectedIngredient} />
+          </Modal>
+      }
     </>
   );
 };

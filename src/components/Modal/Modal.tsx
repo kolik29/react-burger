@@ -5,7 +5,7 @@ import { CloseIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import { IModal } from '../../types/Modal';
 import ModalOverlay from '../ModalOverlay/ModalOverlay';
 
-const Modal: React.FC<IModal> = ({ isModalOpen, onClose, children }: any) => {
+const Modal: React.FC<IModal> = ({ isModalOpen, onClose, children }) => {
   const modalRoot = document.getElementById('modal-root');
 
   React.useEffect(() => {
