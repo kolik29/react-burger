@@ -1,0 +1,19 @@
+.burger-ingredient:first-child {
+    padding-top: 0;
+}
+
+.burger-ingredient:last-child {
+    padding-bottom: 0;
+}
+
+.burger-dragdrop {
+    left: 0;
+}
+
+.burger {
+    grid-template-rows: auto 1fr auto;
+}
+
+.burger-ingredients {
+    grid-template-rows: auto 1fr;
+}

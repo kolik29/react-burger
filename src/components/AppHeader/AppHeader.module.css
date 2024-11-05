@@ -1,0 +1,11 @@
+.header_template {
+    grid-template-columns: 1fr auto 1fr;
+}
+
+.header_bg {
+    background-color: #1C1C21;
+}
+
+.button_transition {
+    transition: .3s;
+}
