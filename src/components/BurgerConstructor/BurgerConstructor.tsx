@@ -6,19 +6,24 @@ import CustomScrollbar from '../CustomScrollbar/CustomScrollbar.tsx';
 import OrderDetails from '../OrderDetails/OrderDetails.tsx';
 import { useModal } from '../../hooks/useModal.tsx';
 import Modal from '../Modal/Modal.tsx';
+import { useDispatch, useSelector } from 'react-redux';
+import { setOrder } from '../../services/orderReducer.tsx';
 
-const BurgerConstructor: React.FC<{ data: IIngredient[] }> = ({ data }) => {
+const BurgerConstructor: React.FC = () => {
+  const dispatch = useDispatch();
+  const data = useSelector((state: any) => state.burgerConstructor);
+
   const { isModalOpen, openModal, closeModal } = useModal();
-  const [orderCode, setOrderCode] = React.useState<string | null>(null);
 
   const handleOpenModal = () => {
+    const orderCode = Math.round(Math.random() * 10000).toString().padStart(6, '0');
+    dispatch(setOrder(orderCode));
     openModal();
-    setOrderCode(Math.round(Math.random() * 10000).toString().padStart(6, '0'));
   };
 
   const handleCloseModal = () => {
     closeModal();
-    setOrderCode(null);
+    dispatch(setOrder(''));
   };
 
   if (!data || data.length === 0) {
@@ -29,23 +34,23 @@ const BurgerConstructor: React.FC<{ data: IIngredient[] }> = ({ data }) => {
     );
   }
 
-  const buns = data[0];
-  const currentIngredients = [data[5], data[4], data[7], data[8], data[8], data[4], data[7], data[8], data[8], data[4], data[7], data[8], data[8], data[4], data[7], data[8], data[8], data[4], data[7], data[8], data[8], data[4], data[7], data[8], data[8], data[4], data[7], data[8], data[8]];
+  const currentBuns = data.filter((item: IIngredient) => item.type === 'bun')[0];
+  const currentIngredients = data.filter((item: IIngredient) => item.type !== 'bun');
 
   return (
     <>
       <section className={`${styles['burger-ingredients']} max-width_600px width_100 display_grid height_auto overflow_hidden mt-25`}>
         <div className={`display_grid ${styles.burger} overflow_hidden height_100`}>
-          <div className="position_relative display_flex align-items_center justify-content_end pl-8 pr-4">
+          {currentBuns && <div className="position_relative display_flex align-items_center justify-content_end pl-8 pr-4">
             <ConstructorElement
               type="top"
               isLocked={true}
-              text={`${buns.name} (верх)`}
-              price={buns.price}
-              thumbnail={buns.image_mobile}
-              key={buns._id + '_top'}
+              text={`${currentBuns.name} (верх)`}
+              price={currentBuns.price}
+              thumbnail={currentBuns.image_mobile}
+              key={currentBuns._id + '_top'}
             />
-          </div>
+          </div>}
           <div className="mt-4 mb-4 height_auto overflow_hidden">
             <CustomScrollbar>
               {currentIngredients.map((item: IIngredient, index: number) => (
@@ -59,21 +64,22 @@ const BurgerConstructor: React.FC<{ data: IIngredient[] }> = ({ data }) => {
                     price={item.price}
                     thumbnail={item.image_mobile}
                     key={item._id + '_' + index}
+                    handleClose={() => {}}
                   />
                 </div>
               ))}
             </CustomScrollbar>
           </div>
-          <div className="position_relative display_flex align-items_center justify-content_end pl-8 pr-4">
+          {currentBuns && <div className="position_relative display_flex align-items_center justify-content_end pl-8 pr-4">
             <ConstructorElement
               type="bottom"
               isLocked={true}
-              text={`${buns.name} (низ)`}
-              price={buns.price}
-              thumbnail={buns.image_mobile}
-              key={buns._id + '_bottom'}
+              text={`${currentBuns.name} (низ)`}
+              price={currentBuns.price}
+              thumbnail={currentBuns.image_mobile}
+              key={currentBuns._id + '_bottom'}
             />
-          </div>
+          </div>}
         </div>
         <div className="display_flex align-items_start mt-10 mb-10 pr-4">
           <div className="display_flex justify-content_end width_100">
@@ -91,9 +97,9 @@ const BurgerConstructor: React.FC<{ data: IIngredient[] }> = ({ data }) => {
         </div>
       </section>
       {
-        (isModalOpen && orderCode) &&
+        isModalOpen &&
           <Modal isModalOpen={isModalOpen} onClose={handleCloseModal}>
-            <OrderDetails orderCode={orderCode} />
+            <OrderDetails />
           </Modal>
       }
     </>

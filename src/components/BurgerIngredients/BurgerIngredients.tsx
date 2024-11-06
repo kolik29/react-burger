@@ -6,6 +6,9 @@ import CustomScrollBar from '../CustomScrollbar/CustomScrollbar.tsx';
 import IngredientDetails from '../IngredientDetails/IngredientDetails.tsx';
 import { useModal } from '../../hooks/useModal.tsx';
 import Modal from '../Modal/Modal.tsx';
+import { useDispatch, useSelector } from 'react-redux';
+import { setSelectedIngredients } from '../../services/burgerConstructorReducer.tsx';
+import { setCurrentIngredient, resetCurrentIngredient } from '../../services/currentIngredientReducer.tsx';
 
 const IngredientItem: React.FC<{ item: IIngredient, count: number, onClick: () => void }> = ({ item, count, onClick }) => (
   <div
@@ -28,16 +31,18 @@ const IngredientItem: React.FC<{ item: IIngredient, count: number, onClick: () =
   </div>
 )
 
-const BurgerIngredients: React.FC<{ data: IIngredient[] }> = ({ data }) => {
+const BurgerIngredients: React.FC = () => {
+  const dispath = useDispatch();
+  const data = useSelector((state: any) => state.ingredients);
+
   const { isModalOpen, openModal, closeModal } = useModal();
 
   const [current, setCurrent] = React.useState('buns');
-  const [selectedIngredient, setSelectedIngredient] = React.useState<IIngredient | null>(null);
   const [ingredientCounts, setIngredientCounts] = React.useState<{ [id: string]: number }>({});
 
-  const buns = data.filter((item: any) => item.type === 'bun');
-  const sauces = data.filter((item: any) => item.type === 'sauce');
-  const ingredients = data.filter((item: any) => item.type === 'main');
+  const buns = data.filter((item: IIngredient) => item.type === 'bun');
+  const sauces = data.filter((item: IIngredient) => item.type === 'sauce');
+  const ingredients = data.filter((item: IIngredient) => item.type === 'main');
 
   const tabBuns = React.useRef<HTMLDivElement>(null);
   const tabSauces = React.useRef<HTMLDivElement>(null);
@@ -64,7 +69,7 @@ const BurgerIngredients: React.FC<{ data: IIngredient[] }> = ({ data }) => {
       {}
     );
     setIngredientCounts(counts);
-  }, [data, isModalOpen, selectedIngredient]);
+  }, [data, isModalOpen]);
   
   if (!data || data.length === 0) {
     return (
@@ -75,13 +80,14 @@ const BurgerIngredients: React.FC<{ data: IIngredient[] }> = ({ data }) => {
   }
 
   const handleOpenModal = (item: IIngredient) => {
+    dispath(setCurrentIngredient(item));
     openModal();
-    setSelectedIngredient(item);
   };
+
 
   const handleCloseModal = () => {
     closeModal();
-    setSelectedIngredient(null);
+    dispath(resetCurrentIngredient());
   };
 
   return (
@@ -105,12 +111,15 @@ const BurgerIngredients: React.FC<{ data: IIngredient[] }> = ({ data }) => {
               <h2 className='text text_type_main-medium'>Булки</h2>
               <div className='display_flex pr-1 pl-1 pt-6 pb-2 flex-wrap_wrap'>
                 {
-                  buns.map((item) => (
+                  buns.map((item: IIngredient) => (
                     <IngredientItem
                       key={item._id}
                       item={item}
                       count={ingredientCounts[item._id]}
-                      onClick={() => handleOpenModal(item)}
+                      onClick={() => {
+                        handleOpenModal(item);
+                        dispath(setSelectedIngredients(item));
+                      }}
                     />
                   ))
                 }
@@ -120,12 +129,15 @@ const BurgerIngredients: React.FC<{ data: IIngredient[] }> = ({ data }) => {
               <h2 className='text text_type_main-medium'>Соусы</h2>
               <div className='display_flex pr-1 pl-1 pt-6 pb-2 flex-wrap_wrap'>
                 {
-                  sauces.map((item) => (
+                  sauces.map((item: IIngredient) => (
                     <IngredientItem
                       key={item._id}
                       item={item}
                       count={ingredientCounts[item._id]}
-                      onClick={() => handleOpenModal(item)}
+                      onClick={() => {
+                        handleOpenModal(item);
+                        dispath(setSelectedIngredients(item));
+                      }}
                     />
                   ))
                 }
@@ -135,12 +147,15 @@ const BurgerIngredients: React.FC<{ data: IIngredient[] }> = ({ data }) => {
               <h2 className='text text_type_main-medium'>Начинки</h2>
               <div className='display_flex pr-1 pl-1 pt-6 pb-2 flex-wrap_wrap'>
                 {
-                  ingredients.map((item) => (
+                  ingredients.map((item: IIngredient) => (
                     <IngredientItem
                       key={item._id}
                       item={item}
                       count={ingredientCounts[item._id]}
-                      onClick={() => handleOpenModal(item)}
+                      onClick={() => {
+                        handleOpenModal(item);
+                        dispath(setSelectedIngredients(item));
+                      }}
                     />
                   ))
                 }
@@ -150,9 +165,9 @@ const BurgerIngredients: React.FC<{ data: IIngredient[] }> = ({ data }) => {
         </div>
       </section>
       {
-        (isModalOpen && selectedIngredient) &&
+        (isModalOpen) &&
           <Modal isModalOpen={isModalOpen} onClose={handleCloseModal}>
-            <IngredientDetails ingredient={selectedIngredient} />
+            <IngredientDetails />
           </Modal>
       }
     </>

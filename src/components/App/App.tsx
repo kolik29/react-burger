@@ -2,11 +2,12 @@ import React from 'react';
 import AppHeader from '../AppHeader/AppHeader';
 import BurgerIngredients from '../BurgerIngredients/BurgerIngredients';
 import BurgerConstructor from '../BurgerConstructor/BurgerConstructor';
-import { IIngredient } from '../../types/Ingredient';
+import { setIngredients } from '../../services/ingredientsReducer';
+import { useDispatch } from 'react-redux';
 
 function App() {
-  const [ingredients, setIngredients] = React.useState<IIngredient[]>([])
-  const url = 'https://norma.nomoreparties.space'
+  const dispatch = useDispatch();
+  const url = 'https://norma.nomoreparties.space';
 
   const fetchIngredients = React.useCallback(async () => {
     try {
@@ -18,7 +19,7 @@ function App() {
 
       const data = await response.json();
       
-      setIngredients(data.data);
+      dispatch(setIngredients(data.data));
     } catch (e) {
       console.error(e);
     }
@@ -34,8 +35,8 @@ function App() {
       <div className="wrapper overflow_hidden height_100">
         <main className="container display_flex flex-direction_column height_100">
           <div className="display_flex justify-content_space-between height_100 overflow_hidden">
-            <BurgerIngredients key="ingredients" data={ingredients} />
-            <BurgerConstructor key="constructor" data={ingredients} />
+            <BurgerIngredients key="ingredients" />
+            <BurgerConstructor key="constructor" />
           </div>
         </main>
       </div>
