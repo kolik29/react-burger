@@ -4,6 +4,8 @@ import BurgerIngredients from '../BurgerIngredients/BurgerIngredients';
 import BurgerConstructor from '../BurgerConstructor/BurgerConstructor';
 import { setIngredients } from '../../services/ingredientsReducer';
 import { useDispatch } from 'react-redux';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
 function App() {
   const dispatch = useDispatch();
@@ -35,8 +37,10 @@ function App() {
       <div className="wrapper overflow_hidden height_100">
         <main className="container display_flex flex-direction_column height_100">
           <div className="display_flex justify-content_space-between height_100 overflow_hidden">
-            <BurgerIngredients key="ingredients" />
-            <BurgerConstructor key="constructor" />
+            <DndProvider backend={HTML5Backend}>
+              <BurgerIngredients key="ingredients" />
+              <BurgerConstructor key="constructor" />
+            </DndProvider>
           </div>
         </main>
       </div>
