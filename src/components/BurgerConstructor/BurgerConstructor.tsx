@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Button, ConstructorElement, CurrencyIcon, DragIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import styles from './BurgerConstructor.module.css';
 import { IIngredient } from '../../types/Ingredient';
@@ -8,17 +8,120 @@ import { useModal } from '../../hooks/useModal.tsx';
 import Modal from '../Modal/Modal.tsx';
 import { useDispatch, useSelector } from 'react-redux';
 import { setOrder } from '../../services/orderReducer.tsx';
+import { useDrop, useDrag } from 'react-dnd';
+import { setSelectedIngredients, removeSelectedIngredients, reorderSelectedIngredients } from '../../services/burgerConstructorReducer.tsx';
+
+const BunConstructorElement: React.FC<{ bun: IIngredient; type: 'top' | 'bottom' }> = ({ bun, type }) => (
+  <div className="position_relative display_flex align-items_center justify-content_end pl-8 pr-4">
+    <ConstructorElement
+      type={type}
+      isLocked={true}
+      text={`${bun.name} (${type === 'top' ? 'верх' : 'низ'})`}
+      price={bun.price}
+      thumbnail={bun.image_mobile}
+      key={bun._id + `_${type}`}
+    />
+  </div>
+);
+
+const IngredientConstructorElement: React.FC<{ ingredient: IIngredient; index: number; onRemove: () => void; moveIngredient: (fromIndex: number, toIndex: number) => void }> = ({ ingredient, index, onRemove, moveIngredient }) => {
+  const [, dragRef] = useDrag({
+    type: 'ingredient',
+    item: { index },
+  });
+
+  const [, dropRef] = useDrop({
+    accept: 'ingredient',
+    drop: (item: { index: number }) => {
+      if (item.index !== index) {
+        moveIngredient(item.index, index);
+      }
+    },
+  });
+
+  return (
+    <div
+      ref={(node) => dragRef(dropRef(node))}
+      className={`${styles['burger-ingredient']} position_relative display_flex align-items_center justify-content_end pl-8 pr-4 pb-2 pt-2`}
+    >
+      <DragIcon type="primary" className={`${styles['burger-dragdrop']} cursor_pointer position_absolute`} />
+      <ConstructorElement
+        text={ingredient.name}
+        price={ingredient.price}
+        thumbnail={ingredient.image_mobile}
+        key={ingredient._id + `_${index}`}
+        handleClose={onRemove}
+      />
+    </div>
+  );
+};
+
+const IngredientListWrapper: React.FC<{ ingredients: IIngredient[]; onRemove: (index: number) => void }> = ({ ingredients, onRemove }) => {
+  const dispatch = useDispatch();
+
+  const moveIngredient = (fromIndex: number, toIndex: number) => {
+    const updatedIngredients = [...ingredients];
+    const [movedItem] = updatedIngredients.splice(fromIndex, 1);
+    updatedIngredients.splice(toIndex, 0, movedItem);
+    dispatch(reorderSelectedIngredients(updatedIngredients));
+  };
+
+  return (
+    <CustomScrollbar>
+      {ingredients.map((item, index) => (
+        <IngredientConstructorElement
+          key={item._id + `_${index}`}
+          ingredient={item}
+          index={index}
+          onRemove={() => onRemove(index)}
+          moveIngredient={moveIngredient}
+        />
+      ))}
+    </CustomScrollbar>
+  );
+};
 
 const BurgerConstructor: React.FC = () => {
   const dispatch = useDispatch();
   const data = useSelector((state: any) => state.burgerConstructor);
-
   const { isModalOpen, openModal, closeModal } = useModal();
+  const [, dropIngredientsRef] = useDrop({
+    accept: 'ingredient',
+    drop: (ingredient: IIngredient) => {
+      dispatch(setSelectedIngredients(ingredient));
+    }
+  });
 
-  const handleOpenModal = () => {
-    const orderCode = Math.round(Math.random() * 10000).toString().padStart(6, '0');
-    dispatch(setOrder(orderCode));
-    openModal();
+  const submitOrder = async () => {
+    const ingredientIds = data.map((ingredient: IIngredient) => ingredient._id);
+
+    try {
+      const url = 'https://norma.nomoreparties.space';
+      const response = await fetch(url + '/api/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ingredients: ingredientIds,
+        }),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        
+        if (result.success) {
+          dispatch(setOrder(result.order.number));
+          openModal();
+        } else {
+          throw new Error('Ошибка при создании заказа');
+        }
+      } else {
+        throw new Error('Ошибка при создании заказа');
+      }
+    } catch (error) {
+      console.error('Ошибка при создании заказа:', error);
+    }
   };
 
   const handleCloseModal = () => {
@@ -26,9 +129,26 @@ const BurgerConstructor: React.FC = () => {
     dispatch(setOrder(''));
   };
 
+  const handleRemoveIngredient = (index: number) => {
+    dispatch(removeSelectedIngredients(index));
+  };
+
+  const totalPrice = useMemo(() => {
+    return data.reduce((sum: number, item: IIngredient) => {
+      if (item.type === 'bun') {
+        return sum + item.price * 2;
+      }
+      
+      return sum + item.price;
+    }, 0);
+  }, [data]);
+
   if (!data || data.length === 0) {
     return (
-      <div className="display_flex justify-content_center align-items_center width_100 pt-10 pb-10">
+      <div
+        className="display_flex justify-content_center align-items_center width_100 pt-10 pb-10"
+        ref={dropIngredientsRef}
+      >
         <div className="text text_type_main-default text_color_inactive text-align_center">Нет ингредиентов</div>
       </div>
     );
@@ -39,69 +159,37 @@ const BurgerConstructor: React.FC = () => {
 
   return (
     <>
-      <section className={`${styles['burger-ingredients']} max-width_600px width_100 display_grid height_auto overflow_hidden mt-25`}>
+      <section
+        className={`${styles['burger-ingredients']} max-width_600px width_100 display_grid height_auto overflow_hidden mt-25`}
+        ref={dropIngredientsRef}
+      >
         <div className={`display_grid ${styles.burger} overflow_hidden height_100`}>
-          {currentBuns && <div className="position_relative display_flex align-items_center justify-content_end pl-8 pr-4">
-            <ConstructorElement
-              type="top"
-              isLocked={true}
-              text={`${currentBuns.name} (верх)`}
-              price={currentBuns.price}
-              thumbnail={currentBuns.image_mobile}
-              key={currentBuns._id + '_top'}
-            />
-          </div>}
+          {currentBuns && <BunConstructorElement bun={currentBuns} type="top" />}
           <div className="mt-4 mb-4 height_auto overflow_hidden">
-            <CustomScrollbar>
-              {currentIngredients.map((item: IIngredient, index: number) => (
-                <div
-                  key={item._id + '_' + index}
-                  className={`${styles['burger-ingredient']} position_relative display_flex align-items_center justify-content_end pl-8 pr-4 pb-2 pt-2`}
-                >
-                  <DragIcon type="primary" className={`${styles['burger-dragdrop']} cursor_pointer position_absolute`} />
-                  <ConstructorElement
-                    text={item.name}
-                    price={item.price}
-                    thumbnail={item.image_mobile}
-                    key={item._id + '_' + index}
-                    handleClose={() => {}}
-                  />
-                </div>
-              ))}
-            </CustomScrollbar>
+            <IngredientListWrapper ingredients={currentIngredients} onRemove={handleRemoveIngredient} />
           </div>
-          {currentBuns && <div className="position_relative display_flex align-items_center justify-content_end pl-8 pr-4">
-            <ConstructorElement
-              type="bottom"
-              isLocked={true}
-              text={`${currentBuns.name} (низ)`}
-              price={currentBuns.price}
-              thumbnail={currentBuns.image_mobile}
-              key={currentBuns._id + '_bottom'}
-            />
-          </div>}
+          {currentBuns && <BunConstructorElement bun={currentBuns} type="bottom" />}
         </div>
         <div className="display_flex align-items_start mt-10 mb-10 pr-4">
           <div className="display_flex justify-content_end width_100">
             <div className="mr-10 display_flex align-items_center">
               <bdi className="text text_type_digits-medium mr-2">
-                610 <CurrencyIcon type="primary" />
+                {totalPrice} <CurrencyIcon type="primary" />
               </bdi>
             </div>
             <div className="create-order">
-              <Button htmlType="button" type="primary" size="large" onClick={handleOpenModal}>
+              <Button htmlType="button" type="primary" size="large" onClick={submitOrder}>
                 Оформить заказ
               </Button>
             </div>
           </div>
         </div>
       </section>
-      {
-        isModalOpen &&
-          <Modal isModalOpen={isModalOpen} onClose={handleCloseModal}>
-            <OrderDetails />
-          </Modal>
-      }
+      {isModalOpen && (
+        <Modal isModalOpen={isModalOpen} onClose={handleCloseModal}>
+          <OrderDetails />
+        </Modal>
+      )}
     </>
   );
 };
