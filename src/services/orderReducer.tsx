@@ -1,4 +1,4 @@
-import { createAction, createReducer, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAction, createReducer, PayloadAction } from "@reduxjs/toolkit";
 
 export const setOrder = createAction<string>('order/setOrder');
 

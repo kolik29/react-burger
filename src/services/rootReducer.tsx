@@ -3,10 +3,12 @@ import { burgerConstructorReducer } from "./burgerConstructorReducer";
 import { orderReducer } from "./orderReducer";
 import { currentIngredientReducer } from "./currentIngredientReducer";
 import { ingredientsReducer } from "./ingredientsReducer";
+import { scrollbarTabsReducer } from "./scrollbarTabsReduces";
 
 export const rootReducer = combineReducers({
   ingredients: ingredientsReducer,
   currentIngredient: currentIngredientReducer,
   burgerConstructor: burgerConstructorReducer,
-  order: orderReducer
+  order: orderReducer,
+  scrollbarTab: scrollbarTabsReducer
 })
