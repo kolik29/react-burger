@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setOrder } from '../../services/orderReducer.tsx';
 import { useDrop, useDrag } from 'react-dnd';
 import { setSelectedIngredients, removeSelectedIngredients, reorderSelectedIngredients } from '../../services/burgerConstructorReducer.tsx';
+import { v4 as uuidv4 } from 'uuid';
 
 const BunConstructorElement: React.FC<{ bun: IIngredient; type: 'top' | 'bottom' }> = ({ bun, type }) => (
   <div className="position_relative display_flex align-items_center justify-content_end pl-8 pr-4">
@@ -19,7 +20,7 @@ const BunConstructorElement: React.FC<{ bun: IIngredient; type: 'top' | 'bottom'
       text={`${bun.name} (${type === 'top' ? 'верх' : 'низ'})`}
       price={bun.price}
       thumbnail={bun.image_mobile}
-      key={bun._id + `_${type}`}
+      key={bun.key}
     />
   </div>
 );
@@ -49,7 +50,7 @@ const IngredientConstructorElement: React.FC<{ ingredient: IIngredient; index: n
         text={ingredient.name}
         price={ingredient.price}
         thumbnail={ingredient.image_mobile}
-        key={ingredient._id + `_${index}`}
+        key={ingredient.key}
         handleClose={onRemove}
       />
     </div>
@@ -70,7 +71,7 @@ const IngredientListWrapper: React.FC<{ ingredients: IIngredient[]; onRemove: (i
     <CustomScrollbar>
       {ingredients.map((item, index) => (
         <IngredientConstructorElement
-          key={item._id + `_${index}`}
+          key={item.key}
           ingredient={item}
           index={index}
           onRemove={() => onRemove(index)}
@@ -88,12 +89,12 @@ const BurgerConstructor: React.FC = () => {
   const [, dropIngredientsRef] = useDrop({
     accept: 'ingredient',
     drop: (ingredient: IIngredient) => {
-      dispatch(setSelectedIngredients(ingredient));
+      dispatch(setSelectedIngredients({ ...ingredient, key: uuidv4() }));
     }
   });
 
   const submitOrder = async () => {
-    const ingredientIds = data.map((ingredient: IIngredient) => ingredient._id);
+    const ingredientIds = data.map((ingredient: IIngredient) => ingredient.key);
 
     try {
       const url = 'https://norma.nomoreparties.space';
