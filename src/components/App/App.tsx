@@ -9,7 +9,8 @@ import Register from '../../pages/Register/Register';
 import ForgotPassword from '../../pages/ForgotPassword/ForgotPassword';
 import ResetPassword from '../../pages/ResetPassword/ResetPassword';
 import Profile from '../../pages/Profile/Profile';
-import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
+import ProtectedRouteElement from '../ProtectedRouteElement/ProtectedRouteElement';
+import IngredientDetailsPage from '../../pages/IngredientDetailsPage/IngredientDetailsPage';
 
 function App() {
   const dispatch = useDispatch();
@@ -41,9 +42,7 @@ function App() {
 
       <Routes>
         <Route path="/" element={
-          <ProtectedRoute>
-            <Main />
-          </ProtectedRoute>
+          <Main />
         } />
         <Route path="/login" element={
           <Login />
@@ -58,24 +57,24 @@ function App() {
           <ResetPassword />
         } />
         <Route path="/profile" element={
-          <ProtectedRoute>
+          <ProtectedRouteElement>
             <Profile />
-          </ProtectedRoute>
+          </ProtectedRouteElement>
         } />
         <Route path="/profile/orders" element={
-          <ProtectedRoute>
+          <ProtectedRouteElement>
             <Profile />
-          </ProtectedRoute>
+          </ProtectedRouteElement>
         } />
         <Route path="/profile/orders/:number" element={
-          <ProtectedRoute>
+          <ProtectedRouteElement>
             <Profile />
-          </ProtectedRoute>
+          </ProtectedRouteElement>
         } />
         <Route path="/ingredients/:id" element={
-          <ProtectedRoute>
-            <Main />
-          </ProtectedRoute>
+          <ProtectedRouteElement>
+            <IngredientDetailsPage />
+          </ProtectedRouteElement>
         } />
       </Routes>
     </BrowserRouter>

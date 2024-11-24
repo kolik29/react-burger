@@ -2,18 +2,16 @@ import React, { useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../services/store";
-import { IProtectedRoute } from "../../types/ProtectedRoute";
 import { refreshToken } from "../../services/authReducer";
+import { IProtectedRouteElement } from "../../types/ProtectedRouteElement";
 
-const ProtectedRoute: React.FC<IProtectedRoute> = ({ children }) => {
+const ProtectedRouteElement: React.FC<IProtectedRouteElement> = ({ children }) => {
   const { accessToken, refreshToken: storedRefreshToken } = useSelector(
     (state: RootState) => state.auth
   );
   const dispatch: AppDispatch = useDispatch();
   
   useEffect(() => {
-
-    console.log(accessToken, storedRefreshToken);
     if (!accessToken && storedRefreshToken) {
       dispatch(refreshToken({ refreshToken: storedRefreshToken }));
     }
@@ -26,4 +24,4 @@ const ProtectedRoute: React.FC<IProtectedRoute> = ({ children }) => {
   return children;
 };
 
-export default ProtectedRoute;
+export default ProtectedRouteElement;
