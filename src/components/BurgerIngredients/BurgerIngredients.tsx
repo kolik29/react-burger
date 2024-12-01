@@ -3,8 +3,8 @@ import { Tab, CurrencyIcon, Counter } from '@ya.praktikum/react-developer-burger
 import styles from './BurgerIngredients.module.css';
 import { IIngredient } from '../../types/Ingredient';
 import CustomScrollBar from '../CustomScrollbar/CustomScrollbar.tsx';
+import { useNavigate, useLocation } from 'react-router-dom';
 import IngredientDetails from '../IngredientDetails/IngredientDetails.tsx';
-import { useModal } from '../../hooks/useModal.tsx';
 import Modal from '../Modal/Modal.tsx';
 import { useDispatch, useSelector } from 'react-redux';
 import { setCurrentIngredient, resetCurrentIngredient } from '../../services/currentIngredientReducer.tsx';
@@ -36,16 +36,16 @@ const IngredientItem: React.FC<{ item: IIngredient, count: number, onClick: () =
         <p className='text-align_center height_48px text text_type_main-default'>{item.name}</p>
       </div>
     </div>
-  )
-}
+  );
+};
 
 const BurgerIngredients: React.FC = () => {
-  const dispath = useDispatch();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation(); // Получение текущего пути
   const data = useSelector((state: any) => state.ingredients);
   const burgerConstructor = useSelector((state: any) => state.burgerConstructor);
   const currentTab = useSelector((state: any) => state.scrollbarTab);
-
-  const { isModalOpen, openModal, closeModal } = useModal();
 
   const [ingredientCounts, setIngredientCounts] = React.useState<{ [id: string]: number }>({});
 
@@ -87,14 +87,9 @@ const BurgerIngredients: React.FC = () => {
   }
 
   const handleOpenModal = (item: IIngredient) => {
-    dispath(setCurrentIngredient(item));
-    openModal();
-  };
-
-
-  const handleCloseModal = () => {
-    closeModal();
-    dispath(resetCurrentIngredient());
+    dispatch(setCurrentIngredient(item));
+    sessionStorage.setItem('currentIngredient', JSON.stringify(item));
+    navigate(`/ingredients/${item._id}`, { state: { background: location } }); // Передаем текущий путь
   };
 
   return (
@@ -123,9 +118,7 @@ const BurgerIngredients: React.FC = () => {
                       key={item._id}
                       item={item}
                       count={ingredientCounts[item._id]}
-                      onClick={() => {
-                        handleOpenModal(item);
-                      }}
+                      onClick={() => handleOpenModal(item)}
                     />
                   ))
                 }
@@ -140,9 +133,7 @@ const BurgerIngredients: React.FC = () => {
                       key={item._id}
                       item={item}
                       count={ingredientCounts[item._id]}
-                      onClick={() => {
-                        handleOpenModal(item);
-                      }}
+                      onClick={() => handleOpenModal(item)}
                     />
                   ))
                 }
@@ -157,9 +148,7 @@ const BurgerIngredients: React.FC = () => {
                       key={item._id}
                       item={item}
                       count={ingredientCounts[item._id]}
-                      onClick={() => {
-                        handleOpenModal(item);
-                      }}
+                      onClick={() => handleOpenModal(item)}
                     />
                   ))
                 }
@@ -168,12 +157,6 @@ const BurgerIngredients: React.FC = () => {
           </CustomScrollBar>
         </div>
       </section>
-      {
-        (isModalOpen) &&
-          <Modal isModalOpen={isModalOpen} onClose={handleCloseModal}>
-            <IngredientDetails />
-          </Modal>
-      }
     </>
   );
 };

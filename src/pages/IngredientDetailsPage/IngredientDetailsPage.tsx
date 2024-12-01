@@ -1,18 +1,28 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { IIngredient } from '../../types/Ingredient';
 import IngredientDetails from '../../components/IngredientDetails/IngredientDetails';
-import styles from './IngredientDetailsPage.module.css';
+import { setCurrentIngredient } from '../../services/currentIngredientReducer';
 
 const IngredientDetailsPage: React.FC = () => {
+  const dispatch = useDispatch();
   const { id } = useParams();
-  const ingredient = useSelector((state: any) =>
-    state.ingredients.find((item: IIngredient) => item._id === id)
-  );
+
+  const ingredients = useSelector((state: any) => state.ingredients);
+  const ingredient = useSelector((state: any) => state.currentIngredient);
+
+  useEffect(() => {
+    if (id && ingredients.length > 0) {
+      const foundIngredient = ingredients.find((item: IIngredient) => item._id === id);
+      if (foundIngredient) {
+        dispatch(setCurrentIngredient(foundIngredient));
+      }
+    }
+  }, [id, ingredients, dispatch]);
 
   if (!ingredient) {
-    return <p>Ингредиент не найден</p>;
+    return <p className="text text_type_main-medium text-align_center mt-10">Ингредиент не найден</p>;
   }
 
   return (
