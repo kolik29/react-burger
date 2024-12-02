@@ -27,7 +27,7 @@ const App: React.FC = () => {
       const response = await fetch(url + '/api/ingredients');
 
       if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        throw new Error(`HTTP ошибка! Статус: ${response.status}`);
       }
 
       const data = await response.json();
