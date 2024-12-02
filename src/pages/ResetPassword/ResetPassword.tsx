@@ -1,7 +1,7 @@
 import React from 'react';
-import styles from './ResetPassword.module.css';
 import { Button, Input, PasswordInput } from '@ya.praktikum/react-developer-burger-ui-components';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const ResetPassword = () => {
   const [ password, setPassword ] = React.useState('');
@@ -9,6 +9,14 @@ const ResetPassword = () => {
 
   const handleChangePassword = (e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value);
   const handleChangeToken = (e: React.ChangeEvent<HTMLInputElement>) => setToken(e.target.value);
+
+  const forgotPasswordCompleted = useSelector(
+    (state: any) => state.auth.forgotPasswordCompleted
+  );
+
+  if (!forgotPasswordCompleted) {
+    return <Navigate to="/forgot-password" replace />;
+  }
 
   const handleUpdatePassword = async () => {
     try {
@@ -41,7 +49,7 @@ const ResetPassword = () => {
         <div className="display_flex justify-content_center align-items_center height_100">
           <div className="auth display_flex flex-direction_column align-items_center">
             <div className="auth-header mb-6">
-              <h1 className="text text_type_main-medium">Вход</h1>
+              <h1 className="text text_type_main-medium">Восстановление пароля</h1>
             </div>
             <div className="auth-body display_flex flex-direction_column align-items_center mb-20">
               <PasswordInput

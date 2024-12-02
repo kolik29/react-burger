@@ -5,5 +5,6 @@ export interface IAuth {
   accessToken: string | null,
   refreshToken: string | null,
   isLoading: boolean,
-  error: string | undefined | null
+  error: string | undefined | null,
+  forgotPasswordCompleted: boolean
 }

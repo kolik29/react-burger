@@ -1,10 +1,13 @@
 import React from 'react';
-import styles from './ForgotPassword.module.css';
 import { Button, EmailInput } from '@ya.praktikum/react-developer-burger-ui-components';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { setForgotPasswordCompleted } from '../../services/authReducer';
 
 const ForgotPassword = () => {
   const [ email, setEmail ] = React.useState('');
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value);
 
@@ -22,7 +25,8 @@ const ForgotPassword = () => {
         const result = await response.json();
         
         if (result.success) {
-          location.href = '/reset-password';
+          dispatch(setForgotPasswordCompleted(true));
+          navigate('/reset-password');
         } else {
           throw new Error('Ошибка при обработке данных');
         }
@@ -40,7 +44,7 @@ const ForgotPassword = () => {
         <div className="display_flex justify-content_center align-items_center height_100">
           <div className="auth display_flex flex-direction_column align-items_center">
             <div className="auth-header mb-6">
-              <h1 className="text text_type_main-medium">Вход</h1>
+              <h1 className="text text_type_main-medium">Забыли пароль</h1>
             </div>
             <div className="auth-body display_flex flex-direction_column align-items_center mb-20">
               <EmailInput

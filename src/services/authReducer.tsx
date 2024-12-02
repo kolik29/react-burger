@@ -25,6 +25,7 @@ const initialState: IAuth = {
   user: null,
   isLoading: false,
   error: null,
+  forgotPasswordCompleted: false,
 }
 
 export const registerUser = createAsyncThunk(
@@ -185,7 +186,11 @@ export const updateUser = createAsyncThunk(
 const authSlice = createSlice({
   name: 'auth',
   initialState,
-  reducers: {},
+  reducers: {
+    setForgotPasswordCompleted: (state, action) => {
+      state.forgotPasswordCompleted = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(registerUser.pending, (state) => {
@@ -283,4 +288,5 @@ const authSlice = createSlice({
   }
 })
 
+export const { setForgotPasswordCompleted } = authSlice.actions;
 export default authSlice.reducer;
