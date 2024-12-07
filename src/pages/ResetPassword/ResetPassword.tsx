@@ -3,7 +3,7 @@ import { Button, Input, PasswordInput } from '@ya.praktikum/react-developer-burg
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { AppDispatch } from '../../services/store';
-import { resetPassword } from '../../services/authReducer';
+import { resetUserPassword } from '../../services/authReducer';
 
 const ResetPassword = () => {
   const navigate = useNavigate();
@@ -24,7 +24,7 @@ const ResetPassword = () => {
   const handleUpdatePassword = (e: React.FormEvent) => {
     e.preventDefault();
 
-    dispatch(resetPassword({ password, token }))
+    dispatch(resetUserPassword({ password, token }))
       .unwrap()
       .then(() => {
         alert('Пароль успешно изменён!');
