@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import AppHeader from '../AppHeader/AppHeader';
-import { setIngredients } from '../../services/ingredientsReducer';
-import { useDispatch, useSelector } from 'react-redux';
-import { BrowserRouter, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { fetchIngredients } from '../../services/ingredientsReducer';
+import { useDispatch } from 'react-redux';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import Login from '../../pages/Login/Login';
 import Main from '../../pages/Main/Main';
 import Register from '../../pages/Register/Register';
@@ -13,34 +13,18 @@ import IngredientDetailsPage from '../../pages/IngredientDetailsPage/IngredientD
 import ProtectedRouteElement from '../ProtectedRouteElement/ProtectedRouteElement';
 import Modal from '../Modal/Modal';
 import IngredientDetails from '../IngredientDetails/IngredientDetails';
+import { AppDispatch } from '../../services/store';
 
 const App: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const url = 'https://norma.nomoreparties.space';
 
   const location = useLocation();
   const background = location.state?.background;
 
-  const fetchIngredients = React.useCallback(async () => {
-    try {
-      const response = await fetch(url + '/api/ingredients');
-
-      if (!response.ok) {
-        throw new Error(`HTTP ошибка! Статус: ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      dispatch(setIngredients(data.data));
-    } catch (e) {
-      console.error(e);
-    }
-  }, [dispatch]);
-
   useEffect(() => {
-    fetchIngredients();
-  }, [fetchIngredients]);
+    dispatch(fetchIngredients());
+  }, [dispatch]);
 
   const handleCloseModal = () => {
     navigate(-1);

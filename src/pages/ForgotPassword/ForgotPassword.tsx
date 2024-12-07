@@ -2,41 +2,29 @@ import React from 'react';
 import { Button, EmailInput } from '@ya.praktikum/react-developer-burger-ui-components';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { setForgotPasswordCompleted } from '../../services/authReducer';
+import { AppDispatch } from '../../services/store'; // Типизированный dispatch
+import { resetPassword } from '../../services/authReducer'; // Новый thunk
 
 const ForgotPassword = () => {
-  const [ email, setEmail ] = React.useState('');
-  const dispatch = useDispatch();
+  const [email, setEmail] = React.useState('');
+  const dispatch = useDispatch<AppDispatch>(); // Используем типизированный dispatch
   const navigate = useNavigate();
 
   const handleChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value);
 
-  const handleResetPassword = async () => {
-    try {
-      const response = await fetch('https://norma.nomoreparties.space/api/password-reset', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email }),
-      });
+  const handleResetPassword = (e: React.FormEvent) => {
+    e.preventDefault();
 
-      if (response.ok) {
-        const result = await response.json();
-        
-        if (result.success) {
-          dispatch(setForgotPasswordCompleted(true));
-          navigate('/reset-password');
-        } else {
-          throw new Error('Ошибка при обработке данных');
-        }
-      } else {
-        throw new Error('Ошибка при обработке данных');
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  }
+    dispatch(resetPassword({ email }))
+      .unwrap()
+      .then(() => {
+        navigate('/reset-password');
+      })
+      .catch((error) => {
+        console.error(error);
+        alert('Не удалось отправить запрос на сброс пароля');
+      });
+  };
 
   return (
     <div className="wrapper overflow_hidden height_100">
@@ -46,17 +34,17 @@ const ForgotPassword = () => {
             <div className="auth-header mb-6">
               <h1 className="text text_type_main-medium">Забыли пароль</h1>
             </div>
-            <div className="auth-body display_flex flex-direction_column align-items_center mb-20">
+            <form onSubmit={handleResetPassword} className="auth-body display_flex flex-direction_column align-items_center mb-20">
               <EmailInput
                 onChange={handleChangeEmail}
                 value={email}
                 name={'email'}
                 extraClass="mb-6"
               />
-              <Button htmlType="button" type="primary" size="medium" onClick={handleResetPassword}>
+              <Button htmlType="submit" type="primary" size="medium">
                 Восстановить
               </Button>
-            </div>
+            </form>
             <div className="auth-footer">
               <p className="text text_type_main-default text_color_inactive text-align_center mb-4">
                 Вспомнили пароль? 
@@ -67,7 +55,7 @@ const ForgotPassword = () => {
         </div>
       </main>
     </div>
-  )
-}
+  );
+};
 
 export default ForgotPassword;

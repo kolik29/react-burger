@@ -1,5 +1,4 @@
-import React from 'react';
-import styles from './Login.module.css';
+import React, { useState } from 'react';
 import { Button, EmailInput, PasswordInput } from '@ya.praktikum/react-developer-burger-ui-components';
 import { Link, useNavigate } from 'react-router-dom';
 import { loginUser } from '../../services/authReducer';
@@ -7,27 +6,27 @@ import { AppDispatch } from '../../services/store';
 import { useDispatch } from 'react-redux';
 
 const Login = () => {
-  const [ email, setEmail ] = React.useState('');
-  const [ password, setPassword ] = React.useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-  const dispath: AppDispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
   const handleChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value);
   const handleChangePassword = (e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value);
 
-  const handleLogin = async () => {
-    try {
-      const result = await dispath(loginUser({ email, password })).unwrap();
-      
-      if (result.success) {
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    dispatch(loginUser({ email, password }))
+      .unwrap()
+      .then(() => {
         navigate('/');
-      } else {
-        throw new Error('Ошибка при входе');
-      }
-    } catch (error) {
-      console.error(error);
-    }
+      })
+      .catch((error) => {
+        console.error('Ошибка при входе:', error);
+        alert('Ошибка при входе. Проверьте правильность данных.');
+      });
   };
 
   return (
@@ -38,23 +37,23 @@ const Login = () => {
             <div className="auth-header mb-6">
               <h1 className="text text_type_main-medium">Вход</h1>
             </div>
-            <div className="auth-body display_flex flex-direction_column align-items_center mb-20">
+            <form onSubmit={handleLogin} className="auth-body display_flex flex-direction_column align-items_center mb-20">
               <EmailInput
                 onChange={handleChangeEmail}
                 value={email}
-                name={'email'}
+                name="email"
                 extraClass="mb-6"
               />
               <PasswordInput
                 onChange={handleChangePassword}
                 value={password}
-                name={'password'}
+                name="password"
                 extraClass="mb-6"
               />
-              <Button htmlType="button" type="primary" size="medium" onClick={handleLogin}>
+              <Button htmlType="submit" type="primary" size="medium">
                 Войти
               </Button>
-            </div>
+            </form>
             <div className="auth-footer">
               <p className="text text_type_main-default text_color_inactive text-align_center mb-4">
                 Вы — новый пользователь? 
@@ -69,7 +68,7 @@ const Login = () => {
         </div>
       </main>
     </div>
-  )
-}
+  );
+};
 
 export default Login;

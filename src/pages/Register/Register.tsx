@@ -1,30 +1,38 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './Login.module.css';
 import { Button, EmailInput, PasswordInput, Input } from '@ya.praktikum/react-developer-burger-ui-components';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { registerUser } from '../../services/authReducer';
 import { AppDispatch } from '../../services/store';
 
 const Register = () => {
-  const [ email, setEmail ] = React.useState('');
-  const [ password, setPassword ] = React.useState('');
-  const [ name, setName ] = React.useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
 
-  const dispath: AppDispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
 
   const handleChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value);
   const handleChangePassword = (e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value);
   const handleChangeName = (e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value);
 
-  const handleRegister = async () => {
-    try {
-      await dispath(registerUser({ email, password, name }));
-    } catch (error) {
-      console.error(error);
-    }
+  const handleRegister = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    dispatch(registerUser({ email, password, name }))
+      .unwrap()
+      .then(() => {
+        alert('Регистрация прошла успешно!');
+        navigate('/login'); // Перенаправление на страницу входа после регистрации
+      })
+      .catch((error) => {
+        console.error('Ошибка при регистрации:', error);
+        alert('Ошибка при регистрации. Попробуйте снова.');
+      });
   };
-  
+
   return (
     <div className="wrapper overflow_hidden height_100">
       <main className="container display_flex flex-direction_column height_100">
@@ -33,7 +41,7 @@ const Register = () => {
             <div className="auth-header mb-6">
               <h1 className="text text_type_main-medium">Регистрация</h1>
             </div>
-            <div className="auth-body display_flex flex-direction_column align-items_center mb-20">
+            <form onSubmit={handleRegister} className="auth-body display_flex flex-direction_column align-items_center mb-20">
               <Input
                 type="text"
                 placeholder="Имя"
@@ -45,19 +53,19 @@ const Register = () => {
               <EmailInput
                 onChange={handleChangeEmail}
                 value={email}
-                name={'email'}
+                name="email"
                 extraClass="mb-6"
               />
               <PasswordInput
                 onChange={handleChangePassword}
                 value={password}
-                name={'password'}
+                name="password"
                 extraClass="mb-6"
               />
-              <Button htmlType="button" type="primary" size="medium" onClick={handleRegister}>
+              <Button htmlType="submit" type="primary" size="medium">
                 Зарегистрироваться
               </Button>
-            </div>
+            </form>
             <div className="auth-footer">
               <p className="text text_type_main-default text_color_inactive text-align_center mb-4">
                 Уже зарегистрированы? 
@@ -68,7 +76,7 @@ const Register = () => {
         </div>
       </main>
     </div>
-  )
-}
+  );
+};
 
 export default Register;
