@@ -13,3 +13,8 @@ export interface IIngredient {
   __v: number;
   key: string;
 }
+
+export interface IIngredientResponse {
+  success: boolean;
+  data: IIngredient[];
+}

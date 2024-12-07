@@ -1,0 +1,13 @@
+.profile-left {
+    max-width: 320px;
+}
+
+.navlink {
+    color: #8585AD;
+    text-decoration: unset;
+    line-height: 64px;
+}
+
+.navlink-active {
+    color: #fff;
+}

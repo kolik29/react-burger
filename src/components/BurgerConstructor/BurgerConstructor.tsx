@@ -11,6 +11,9 @@ import { setOrder } from '../../services/orderReducer.tsx';
 import { useDrop, useDrag } from 'react-dnd';
 import { setSelectedIngredients, removeSelectedIngredients, reorderSelectedIngredients } from '../../services/burgerConstructorReducer.tsx';
 import { v4 as uuidv4 } from 'uuid';
+import { useNavigate } from 'react-router-dom';
+import { submitOrder } from '../../services/submitOrder.tsx';
+import { AppDispatch } from '../../services/store.tsx';
 
 const BunConstructorElement: React.FC<{ bun: IIngredient; type: 'top' | 'bottom' }> = ({ bun, type }) => (
   <div className="position_relative display_flex align-items_center justify-content_end pl-8 pr-4">
@@ -83,7 +86,8 @@ const IngredientListWrapper: React.FC<{ ingredients: IIngredient[]; onRemove: (i
 };
 
 const BurgerConstructor: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
   const data = useSelector((state: any) => state.burgerConstructor);
   const { isModalOpen, openModal, closeModal } = useModal();
   const [, dropIngredientsRef] = useDrop({
@@ -93,36 +97,30 @@ const BurgerConstructor: React.FC = () => {
     }
   });
 
-  const submitOrder = async () => {
-    const ingredientIds = data.map((ingredient: IIngredient) => ingredient.key);
+  const handleSubmitOrder = () => {
+    let accessToken = localStorage.getItem('accessToken');
 
-    try {
-      const url = 'https://norma.nomoreparties.space';
-      const response = await fetch(url + '/api/orders', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ingredients: ingredientIds,
-        }),
-      });
-
-      if (response.ok) {
-        const result = await response.json();
-        
-        if (result.success) {
-          dispatch(setOrder(result.order.number));
-          openModal();
-        } else {
-          throw new Error('Ошибка при создании заказа');
-        }
-      } else {
-        throw new Error('Ошибка при создании заказа');
-      }
-    } catch (error) {
-      console.error('Ошибка при создании заказа:', error);
+    if (!accessToken) {
+      console.error('Отсутствует токен доступа');
+      navigate('/login', { state: { from: '/' } });
+      return;
     }
+
+    if (!accessToken.startsWith('Bearer ')) {
+      accessToken = `Bearer ${accessToken}`;
+    }
+
+    const ingredientIds = data.map((ingredient: IIngredient) => ingredient._id);
+
+    dispatch(submitOrder({ ingredientIds, accessToken }))
+      .unwrap()
+      .then(() => {
+        openModal();
+      })
+      .catch((error) => {
+        console.error(error);
+        alert('Ошибка при создании заказа');
+      });
   };
 
   const handleCloseModal = () => {
@@ -139,7 +137,7 @@ const BurgerConstructor: React.FC = () => {
       if (item.type === 'bun') {
         return sum + item.price * 2;
       }
-      
+
       return sum + item.price;
     }, 0);
   }, [data]);
@@ -179,7 +177,7 @@ const BurgerConstructor: React.FC = () => {
               </bdi>
             </div>
             <div className="create-order">
-              <Button htmlType="button" type="primary" size="large" onClick={submitOrder}>
+              <Button htmlType="button" type="primary" size="large" onClick={handleSubmitOrder}>
                 Оформить заказ
               </Button>
             </div>

@@ -1,11 +1,19 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styles from './IngredientDetails.module.css';
 import { useSelector } from 'react-redux';
 
 const IngredientDetails: React.FC = () => {
-  const ingredient = useSelector((state: any) => {
+  let ingredient = useSelector((state: any) => {
     return state.currentIngredient
   });
+
+  if (!ingredient) {
+    ingredient = sessionStorage.getItem('currentIngredient');
+    
+    if (ingredient) {
+      ingredient = JSON.parse(ingredient);
+    }
+  }
 
   return (
     <>

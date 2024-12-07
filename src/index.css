@@ -1,5 +1,5 @@
 #root {
-    max-height: 100vh;
+    height: 100vh;
     display: grid;
     grid-template-rows: auto 1fr;
     overflow: hidden;
@@ -103,4 +103,14 @@
 
 .cursor_pointer {
     cursor: pointer;
+}
+
+.link {
+    color: #4C4CFF;
+    transition: .3s;
+    text-decoration: none;
+}
+
+.link:hover {
+    color: #8a8aff;
 }
