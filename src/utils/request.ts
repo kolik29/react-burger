@@ -1,4 +1,4 @@
-import { checkResponse } from "./checkResponsel";
+import { checkResponse } from "./checkResponse";
 
 const baseUrl = 'https://norma.nomoreparties.space';
 
