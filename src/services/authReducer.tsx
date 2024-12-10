@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { IAuth } from '../types/Auth';
 import { request } from '../utils/request';
 
@@ -184,9 +184,10 @@ const authSlice = createSlice({
       state.error = null;
     };
 
-    const rejected = (state: IAuth, action: any) => {
+    const rejected = (state: IAuth, action: PayloadAction<string | undefined>): IAuth => {
       state.isLoading = false;
       state.error = action.payload || 'Произошла ошибка';
+      return state;
     };
 
     builder

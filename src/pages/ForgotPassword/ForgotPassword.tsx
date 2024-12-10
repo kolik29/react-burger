@@ -3,7 +3,7 @@ import { Button, EmailInput } from '@ya.praktikum/react-developer-burger-ui-comp
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../services/store'; // Типизированный dispatch
-import { resetPassword } from '../../services/authReducer'; // Новый thunk
+import { resetPassword, setForgotPasswordCompleted } from '../../services/authReducer'; // Новый thunk
 
 const ForgotPassword = () => {
   const [email, setEmail] = React.useState('');
@@ -18,6 +18,7 @@ const ForgotPassword = () => {
     dispatch(resetPassword({ email }))
       .unwrap()
       .then(() => {
+        dispatch(setForgotPasswordCompleted(true));
         navigate('/reset-password');
       })
       .catch((error) => {

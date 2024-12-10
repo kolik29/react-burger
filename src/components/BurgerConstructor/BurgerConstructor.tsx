@@ -13,7 +13,7 @@ import { setSelectedIngredients, removeSelectedIngredients, reorderSelectedIngre
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
 import { submitOrder } from '../../services/submitOrder.tsx';
-import { AppDispatch } from '../../services/store.tsx';
+import { AppDispatch, RootState } from '../../services/store.tsx';
 
 const BunConstructorElement: React.FC<{ bun: IIngredient; type: 'top' | 'bottom' }> = ({ bun, type }) => (
   <div className="position_relative display_flex align-items_center justify-content_end pl-8 pr-4">
@@ -88,7 +88,7 @@ const IngredientListWrapper: React.FC<{ ingredients: IIngredient[]; onRemove: (i
 const BurgerConstructor: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const data = useSelector((state: any) => state.burgerConstructor);
+  const data = useSelector((state: RootState) => state.burgerConstructor) as IIngredient[];
   const { isModalOpen, openModal, closeModal } = useModal();
   const [, dropIngredientsRef] = useDrop({
     accept: 'ingredient',

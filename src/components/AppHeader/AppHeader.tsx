@@ -12,12 +12,12 @@ const AppHeader = () => {
     'profile': false
   });
   
-  const handleMouseEnter = (button: any) => {
+  const handleMouseEnter = (button: 'constructor' | 'orders' | 'profile'): void => {
     setIsButtonHovered((prev) => ({ ...prev, [button]: true }));
   };
-  
-  const handleMouseLeave = (button: any) => {
-    setIsButtonHovered((prev) => ({ ...prev, [button]: false }));
+
+  const handleMouseLeave = (button: 'constructor' | 'orders' | 'profile'): void => {
+    setIsButtonHovered((prev: typeof isButtonHovered) => ({ ...prev, [button]: false }));
   };
 
   return (

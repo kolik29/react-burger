@@ -15,7 +15,7 @@ const ResetPassword = () => {
   const handleChangePassword = (e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value);
   const handleChangeToken = (e: React.ChangeEvent<HTMLInputElement>) => setToken(e.target.value);
 
-  const forgotPasswordCompleted = useSelector((state: any) => state.auth.forgotPasswordCompleted);
+  const forgotPasswordCompleted: boolean = useSelector((state: { auth: { forgotPasswordCompleted: boolean } }): boolean => state.auth.forgotPasswordCompleted);
 
   if (!forgotPasswordCompleted) {
     return <Navigate to="/forgot-password" replace />;
