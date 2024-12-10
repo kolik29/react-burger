@@ -1,51 +1,82 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import AppHeader from '../AppHeader/AppHeader';
-import BurgerIngredients from '../BurgerIngredients/BurgerIngredients';
-import BurgerConstructor from '../BurgerConstructor/BurgerConstructor';
-import { setIngredients } from '../../services/ingredientsReducer';
+import { fetchIngredients } from '../../services/ingredientsReducer';
 import { useDispatch } from 'react-redux';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import Login from '../../pages/Login/Login';
+import Main from '../../pages/Main/Main';
+import Register from '../../pages/Register/Register';
+import ForgotPassword from '../../pages/ForgotPassword/ForgotPassword';
+import ResetPassword from '../../pages/ResetPassword/ResetPassword';
+import Profile from '../../pages/Profile/Profile';
+import IngredientDetailsPage from '../../pages/IngredientDetailsPage/IngredientDetailsPage';
+import ProtectedRouteElement from '../ProtectedRouteElement/ProtectedRouteElement';
+import Modal from '../Modal/Modal';
+import IngredientDetails from '../IngredientDetails/IngredientDetails';
+import { AppDispatch } from '../../services/store';
 
-function App() {
-  const dispatch = useDispatch();
-  const url = 'https://norma.nomoreparties.space';
+const App: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
 
-  const fetchIngredients = React.useCallback(async () => {
-    try {
-      const response = await fetch(url + '/api/ingredients');
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
+  const location = useLocation();
+  const background = location.state?.background;
 
-      const data = await response.json();
-      
-      dispatch(setIngredients(data.data));
-    } catch (e) {
-      console.error(e);
-    }
-  }, [])
+  useEffect(() => {
+    dispatch(fetchIngredients());
+  }, [dispatch]);
 
-  React.useEffect(() => {
-    fetchIngredients();
-  }, [fetchIngredients]);
+  const handleCloseModal = () => {
+    navigate(-1);
+  };
 
   return (
     <>
       <AppHeader />
-      <div className="wrapper overflow_hidden height_100">
-        <main className="container display_flex flex-direction_column height_100">
-          <div className="display_flex justify-content_space-between height_100 overflow_hidden">
-            <DndProvider backend={HTML5Backend}>
-              <BurgerIngredients key="ingredients" />
-              <BurgerConstructor key="constructor" />
-            </DndProvider>
-          </div>
-        </main>
-      </div>
+
+      <Routes location={background || location}>
+        <Route path="/" element={<Main />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRouteElement>
+              <Profile />
+            </ProtectedRouteElement>
+          }
+        />
+        <Route
+          path="/profile/orders"
+          element={
+            <ProtectedRouteElement>
+              <Profile />
+            </ProtectedRouteElement>
+          }
+        />
+        <Route
+          path="/profile/orders/:number"
+          element={
+            <ProtectedRouteElement>
+              <Profile />
+            </ProtectedRouteElement>
+          }
+        />
+        <Route
+          path="/ingredients/:id"
+          element={<IngredientDetailsPage />}
+        />
+      </Routes>
+
+      {background && (
+        <Modal isModalOpen={true} onClose={handleCloseModal}>
+          <IngredientDetails />
+        </Modal>
+      )}
     </>
-  )
-}
+  );
+};
 
 export default App;
