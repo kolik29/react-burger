@@ -9,8 +9,8 @@ const IngredientDetailsPage: React.FC = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
 
-  const ingredients = useSelector((state: any) => state.ingredients);
-  const ingredient = useSelector((state: any) => state.currentIngredient);
+  const ingredients: IIngredient[] = useSelector((state: { ingredients: IIngredient[] }) => state.ingredients);
+  const ingredient: IIngredient = useSelector((state: { currentIngredient: IIngredient }) => state.currentIngredient);
 
   useEffect(() => {
     if (id && ingredients.length > 0) {
