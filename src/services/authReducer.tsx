@@ -18,99 +18,75 @@ const initialState: IAuth = {
 export const registerUser = createAsyncThunk(
   'auth/registerUser',
   async (data: { email: string; password: string; name: string }, { rejectWithValue }) => {
-    try {
-      return await request('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Ошибка регистрации');
-    }
+    return await request('/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
   }
 );
 
 export const loginUser = createAsyncThunk(
   'auth/loginUser',
   async (data: { email: string; password: string }, { rejectWithValue }) => {
-    try {
-      return await request('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Ошибка входа');
-    }
+    return await request('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
   }
 );
 
 export const logoutUser = createAsyncThunk(
   'auth/logoutUser',
   async (_, { rejectWithValue }) => {
-    try {
-      const refreshToken = localStorage.getItem('refreshToken');
-      return await request('/api/auth/logout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: refreshToken }),
-      });
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Ошибка выхода');
-    }
+    const refreshToken = localStorage.getItem('refreshToken');
+    return await request('/api/auth/logout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: refreshToken }),
+    });
   }
 );
 
-export const refreshToken = createAsyncThunk(
+export const refreshTokenThunk = createAsyncThunk(
   'auth/refreshToken',
   async (_, { rejectWithValue }) => {
-    try {
-      const refreshToken = localStorage.getItem('refreshToken');
-      return await request('/api/auth/token', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ refreshToken }),
-      });
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Ошибка обновления токена');
-    }
+    const refreshToken = localStorage.getItem('refreshToken');
+    return await request('/api/auth/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ refreshToken }),
+    });
   }
 );
 
 export const getUser = createAsyncThunk(
   'auth/getUser',
   async (_, { rejectWithValue }) => {
-    try {
-      const accessToken = localStorage.getItem('accessToken');
-      return await request('/api/auth/user', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: accessToken!,
-        },
-      });
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Ошибка получения данных пользователя');
-    }
+    const accessToken = localStorage.getItem('accessToken');
+    return await request('/api/auth/user', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: accessToken!,
+      },
+    });
   }
 );
 
 export const updateUser = createAsyncThunk(
   'auth/updateUser',
   async (data: { name: string; email: string; password: string }, { rejectWithValue }) => {
-    try {
-      const accessToken = localStorage.getItem('accessToken');
-      return await request('/api/auth/user', {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: accessToken!,
-        },
-        body: JSON.stringify(data),
-      });
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Ошибка обновления данных пользователя');
-    }
+    const accessToken = localStorage.getItem('accessToken');
+    return await request('/api/auth/user', {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: accessToken!,
+      },
+      body: JSON.stringify(data),
+    });
   }
 );
 
@@ -121,21 +97,16 @@ export const checkAndRefreshTokens = createAsyncThunk(
     const refreshToken = localStorage.getItem('refreshToken');
 
     if (!refreshToken) {
-      return rejectWithValue('Отсутствует refreshToken');
+      throw new Error('Отсутствует refreshToken');
     }
 
-    try {
-      if (accessToken) {
-        await dispatch(getUser()).unwrap();
-      } else {
-        const response = await dispatch(refreshToken()).unwrap();
-        localStorage.setItem('accessToken', response.accessToken);
-        localStorage.setItem('refreshToken', response.refreshToken);
-        await dispatch(getUser()).unwrap();
-      }
-    } catch (error: any) {
-      localStorage.clear();
-      return rejectWithValue('Ошибка проверки токенов');
+    if (accessToken) {
+      await dispatch(getUser()).unwrap();
+    } else {
+      const response = await dispatch(refreshToken()).unwrap();
+      localStorage.setItem('accessToken', response.accessToken);
+      localStorage.setItem('refreshToken', response.refreshToken);
+      await dispatch(getUser()).unwrap();
     }
   }
 );
@@ -143,30 +114,22 @@ export const checkAndRefreshTokens = createAsyncThunk(
 export const resetPassword = createAsyncThunk(
   'auth/resetPassword',
   async ({ email }: { email: string }, { rejectWithValue }) => {
-    try {
-      return await request('/api/password-reset', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
-      });
-    } catch (error: any) {
-      return rejectWithValue('Ошибка при сбросе пароля');
-    }
+    return await request('/api/password-reset', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    });
   }
 );
 
 export const resetUserPassword = createAsyncThunk(
   'auth/resetUserPassword',
   async ({ password, token }: { password: string; token: string }, { rejectWithValue }) => {
-    try {
-      return await request('/api/password-reset/reset', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password, token }),
-      });
-    } catch (error: any) {
-      return rejectWithValue('Ошибка установки нового пароля');
-    }
+    return await request('/api/password-reset/reset', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password, token }),
+    });
   }
 );
 
@@ -186,8 +149,7 @@ const authSlice = createSlice({
 
     const rejected = (state: IAuth, action: PayloadAction<string | undefined>): IAuth => {
       state.isLoading = false;
-      state.error = action.payload || 'Произошла ошибка';
-      return state;
+      state.error = action.payload || action.error.message || 'Произошла ошибка';
     };
 
     builder
@@ -220,15 +182,15 @@ const authSlice = createSlice({
         localStorage.clear();
       })
       .addCase(logoutUser.rejected, rejected)
-      .addCase(refreshToken.pending, pending)
-      .addCase(refreshToken.fulfilled, (state, action) => {
+      .addCase(refreshTokenThunk.pending, pending)
+      .addCase(refreshTokenThunk.fulfilled, (state, action) => {
         state.isLoading = false;
         state.accessToken = action.payload.accessToken;
         state.refreshToken = action.payload.refreshToken;
         localStorage.setItem('accessToken', action.payload.accessToken);
         localStorage.setItem('refreshToken', action.payload.refreshToken);
       })
-      .addCase(refreshToken.rejected, rejected);
+      .addCase(refreshTokenThunk.rejected, rejected);
   },
 });
 
