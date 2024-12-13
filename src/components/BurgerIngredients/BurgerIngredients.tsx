@@ -9,6 +9,7 @@ import Modal from '../Modal/Modal.tsx';
 import { useDispatch, useSelector } from 'react-redux';
 import { setCurrentIngredient, resetCurrentIngredient } from '../../services/currentIngredientReducer.tsx';
 import { useDrag } from 'react-dnd';
+import { RootState } from '../../services/store.tsx';
 
 const IngredientItem: React.FC<{ item: IIngredient, count: number, onClick: () => void }> = ({ item, count, onClick }) => {
   const [, reactRef] = useDrag({
@@ -42,10 +43,10 @@ const IngredientItem: React.FC<{ item: IIngredient, count: number, onClick: () =
 const BurgerIngredients: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const location = useLocation(); // Получение текущего пути
-  const data = useSelector((state: any) => state.ingredients);
-  const burgerConstructor = useSelector((state: any) => state.burgerConstructor);
-  const currentTab = useSelector((state: any) => state.scrollbarTab);
+  const location = useLocation();
+  const data = useSelector((state: RootState): IIngredient[] => state.ingredients);
+  const burgerConstructor = useSelector((state: RootState): IIngredient[] => state.burgerConstructor);
+  const currentTab = useSelector((state: RootState): string => state.scrollbarTab);
 
   const [ingredientCounts, setIngredientCounts] = React.useState<{ [id: string]: number }>({});
 
@@ -57,7 +58,7 @@ const BurgerIngredients: React.FC = () => {
   const tabSauces = React.useRef<HTMLDivElement>(null);
   const tabIngredients = React.useRef<HTMLDivElement>(null);
 
-  const scrollToElement = (element: any) => {
+  const scrollToElement = (element: 'buns' | 'sauces' | 'ingredients'): void => {
     if (element === 'buns' && tabBuns.current) {
       tabBuns.current.scrollIntoView({ behavior: 'smooth' });
     } else if (element === 'sauces' && tabSauces.current) {
@@ -69,10 +70,13 @@ const BurgerIngredients: React.FC = () => {
   
   React.useEffect(() => {
     if (burgerConstructor.length) {
-      const counts = burgerConstructor.reduce((acc: any, ingredient: IIngredient) => {
-        acc[ingredient._id] = (acc[ingredient._id] || 0) + 1;
-        return acc;
-      }, {});
+      const counts: { [id: string]: number } = burgerConstructor.reduce(
+        (acc: { [id: string]: number }, ingredient: IIngredient) => {
+          acc[ingredient._id] = (acc[ingredient._id] || 0) + 1;
+          return acc;
+        },
+        {}
+      );
       
       setIngredientCounts(counts);
     }

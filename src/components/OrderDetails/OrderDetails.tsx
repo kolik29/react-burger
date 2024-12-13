@@ -5,9 +5,10 @@ import order_done__bg2 from '../../images/order_done__bg2.svg';
 import order_done__bg3 from '../../images/order_done__bg3.svg';
 import { CheckMarkIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import { useSelector } from 'react-redux';
+import { RootState } from '../../services/store';
 
 const OrderDetails: React.FC = () => {
-  const data = useSelector((state: any) => state.order);
+  const data = useSelector((state: RootState) => state.order) as string | undefined;
 
   return (
     <div className="pt-30 pb-30 pr-20 pl-20">
