@@ -45,6 +45,7 @@ const AppHeader = () => {
             extraClass="display_flex align-items_center text text_type_main-default text_color_inactive ml-2 p-5"
             onMouseEnter={() => handleMouseEnter('orders')}
             onMouseLeave={() => handleMouseLeave('orders')}
+            onClick={() => navigate('/feed')}
           >
             <ListIcon type={isButtonHovered.orders ? 'primary' : 'secondary'} className={styles.button_transition} />
             <span className='ml-2'>

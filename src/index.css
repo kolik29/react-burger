@@ -114,3 +114,7 @@
 .link:hover {
     color: #8a8aff;
 }
+
+.text-align_center {
+    text-align: center;
+}

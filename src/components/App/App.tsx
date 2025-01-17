@@ -14,6 +14,11 @@ import ProtectedRouteElement from '../ProtectedRouteElement/ProtectedRouteElemen
 import Modal from '../Modal/Modal';
 import IngredientDetails from '../IngredientDetails/IngredientDetails';
 import { AppDispatch } from '../../services/store';
+import Feed from '../../pages/Feed/Feed';
+import Orders from '../../pages/Orders/Orders';
+import FeedDetail from '../../pages/FeedDetail/FeedDetail';
+import FeedDetails from '../FeedDetails/FeedDetails';
+import OrderDetail from '../../pages/OrderDetail/OrderDetail';
 
 const App: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -52,7 +57,7 @@ const App: React.FC = () => {
           path="/profile/orders"
           element={
             <ProtectedRouteElement>
-              <Profile />
+              <Orders />
             </ProtectedRouteElement>
           }
         />
@@ -60,7 +65,7 @@ const App: React.FC = () => {
           path="/profile/orders/:number"
           element={
             <ProtectedRouteElement>
-              <Profile />
+              <OrderDetail />
             </ProtectedRouteElement>
           }
         />
@@ -68,12 +73,45 @@ const App: React.FC = () => {
           path="/ingredients/:id"
           element={<IngredientDetailsPage />}
         />
+        <Route
+          path="/feed"
+          element={<Feed />}
+        />
+        <Route
+          path="/feed/:number"
+          element={<FeedDetail />}
+        />
       </Routes>
 
       {background && (
-        <Modal isModalOpen={true} onClose={handleCloseModal}>
-          <IngredientDetails />
-        </Modal>
+        <Routes>
+          <Route
+            path="/ingredients/:id"
+            element={
+              <Modal isModalOpen={true} onClose={handleCloseModal}>
+                <IngredientDetails />
+              </Modal>
+            }
+          />
+          <Route
+            path="/feed/:number"
+            element={
+              <Modal isModalOpen={true} onClose={handleCloseModal}>
+                <FeedDetails />
+              </Modal>
+            }
+          />
+          <Route
+            path="/profile/orders/:number"
+            element={
+              <ProtectedRouteElement>
+                <Modal isModalOpen={true} onClose={handleCloseModal}>
+                  <FeedDetails />
+                </Modal>
+              </ProtectedRouteElement>
+            }
+          />
+        </Routes>
       )}
     </>
   );

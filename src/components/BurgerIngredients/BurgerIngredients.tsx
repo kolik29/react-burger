@@ -4,10 +4,8 @@ import styles from './BurgerIngredients.module.css';
 import { IIngredient } from '../../types/Ingredient';
 import CustomScrollBar from '../CustomScrollbar/CustomScrollbar.tsx';
 import { useNavigate, useLocation } from 'react-router-dom';
-import IngredientDetails from '../IngredientDetails/IngredientDetails.tsx';
-import Modal from '../Modal/Modal.tsx';
 import { useDispatch, useSelector } from 'react-redux';
-import { setCurrentIngredient, resetCurrentIngredient } from '../../services/currentIngredientReducer.tsx';
+import { setCurrentIngredient } from '../../services/currentIngredientReducer.tsx';
 import { useDrag } from 'react-dnd';
 import { RootState } from '../../services/store.tsx';
 
@@ -93,7 +91,7 @@ const BurgerIngredients: React.FC = () => {
   const handleOpenModal = (item: IIngredient) => {
     dispatch(setCurrentIngredient(item));
     sessionStorage.setItem('currentIngredient', JSON.stringify(item));
-    navigate(`/ingredients/${item._id}`, { state: { background: location } }); // Передаем текущий путь
+    navigate(`/ingredients/${item._id}`, { state: { background: location } });
   };
 
   return (

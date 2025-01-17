@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styles from './Profile.module.css';
 import { Button, EmailInput, Input, PasswordInput } from '@ya.praktikum/react-developer-burger-ui-components';
-import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { AppDispatch } from '../../services/store';
 import { useDispatch } from 'react-redux';
 import { getUser, logoutUser, updateUser } from '../../services/authReducer';
@@ -41,6 +41,7 @@ const Profile = () => {
       .catch((error) => {
         console.error('Ошибка при получении пользователя:', error);
         alert('Ошибка при загрузке данных пользователя');
+        navigate('/login');
       });
   }, [dispatch]);
 
@@ -55,6 +56,7 @@ const Profile = () => {
       .catch((error) => {
         console.error('Ошибка при обновлении данных:', error);
         alert('Ошибка при обновлении данных пользователя');
+        navigate('/login');
       });
   };
 
@@ -62,7 +64,7 @@ const Profile = () => {
     <div className="wrapper overflow_hidden height_100">
       <main className="container display_flex flex-direction_column height_100">
         <div className="display_flex justify-content_center align-items_center">
-          <div className="profile display_flex mt-30">
+          <div className="profile display_flex mt-30 width_100">
             <div className={styles['profile-left'] + ' mr-15 text text_type_main-default'}>
               <div className="display_flex flex-direction_column">
                 <NavLink
