@@ -5,7 +5,9 @@ import { currentIngredientReducer } from "./currentIngredientReducer";
 import { ingredientsReducer } from "./ingredientsReducer";
 import { scrollbarTabsReducer } from "./scrollbarTabsReduces";
 import authReducer from "./authReducer";
-import ordersReducer from "./ordersReducer";
+import { socketMiddleware } from "./socketMddleware";
+import ordersReducer from './ordersReducer';
+import userOrdersReducer from './userOrdersReducer';
 
 export const rootReducer = combineReducers({
   ingredients: ingredientsReducer,
@@ -14,5 +16,7 @@ export const rootReducer = combineReducers({
   order: orderReducer,
   scrollbarTab: scrollbarTabsReducer,
   auth: authReducer,
-  orders: ordersReducer
+  socketMiddleware: socketMiddleware,
+  orders: ordersReducer,
+  userOrders: userOrdersReducer
 })

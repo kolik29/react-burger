@@ -1,96 +1,61 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useLocation, useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../services/store";
 import { CurrencyIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import CustomScrollBar from "../../components/CustomScrollbar/CustomScrollbar";
 import styles from "./FeedDetails.module.css";
-import { request } from "../../utils/request";
+import { fetchOrderByNumber } from "../../services/ordersReducer";
 
 const FeedDetails = () => {
-  const location = useLocation();
   const { number } = useParams<{ number: string }>();
+  const location = useLocation();
+  const dispatch = useDispatch();
 
-  const [currentOrder, setCurrentOrder] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+  // Достаем все заказы из Redux (полученные через socket или HTTP)
+  const { orders, isLoading, error } = useSelector(
+    (state: RootState) => state.orders
+  );
 
+  // Достаем массив всех ингредиентов
   const ingredients = useSelector((state: RootState) => state.ingredients);
-  const orders = useSelector((state: RootState) => state.orders.orders);
 
-  const socketRef = useRef<WebSocket | null>(null);
+  // Локальный стейт не всегда нужен, можно сразу показывать данные из Redux
+  // Но, если хотим "склеить" order из location.state и из Redux — можно:
+  const [localOrder, setLocalOrder] = useState<any>(null);
+  const [isOrderNotFound, setIsOrderNotFound] = useState(false);
 
   useEffect(() => {
     if (!number) return;
 
+    // 1. Если мы перешли из "background" (modal), то в location.state.order уже есть заказ
     if (location.state?.order) {
-      setCurrentOrder(location.state.order);
-      setLoading(false);
-    } else {
-      const foundOrder = orders.find((order) => order.number.toString() === number);
-
-      if (foundOrder) {
-        setCurrentOrder(foundOrder);
-        setLoading(false);
-      } else {
-        if (!socketRef.current) {
-          const socket = new WebSocket('wss://norma.nomoreparties.space/orders/all');
-          socketRef.current = socket;
-
-          socket.onopen = () => {
-            console.log('WebSocket соединение установлено');
-          };
-
-          socket.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            if (data.success) {
-              const foundOrder = data.orders.find(
-                (order: any) => order.number.toString() === number
-              );
-              if (foundOrder) {
-                setCurrentOrder(foundOrder);
-                setLoading(false);
-                socket.close();
-                socketRef.current = null;
-              }
-            }
-          };
-
-          socket.onerror = (error) => {
-            console.error('WebSocket ошибка:', error);
-          };
-
-          socket.onclose = () => {
-            console.log('WebSocket соединение закрыто');
-            if (!currentOrder) {
-              request(`/api/orders/${number}`)
-                .then((response: any) => {
-                  if (response.success) {
-                    setCurrentOrder(response.orders[0]);
-                  } else {
-                    setError(true);
-                  }
-                })
-                .catch((err) => {
-                  console.error('Ошибка при запросе заказа:', err);
-                  setError(true);
-                })
-                .finally(() => setLoading(false));
-            }
-          };
-        }
-      }
+      setLocalOrder(location.state.order);
+      return;
     }
 
-    return () => {
-      if (socketRef.current) {
-        socketRef.current.close();
-        socketRef.current = null;
-      }
-    };
-  }, [location.state?.order, number, orders]);
+    // 2. Иначе ищем заказ в Redux
+    const foundOrder = orders.find((o) => o.number.toString() === number);
+    if (foundOrder) {
+      setLocalOrder(foundOrder);
+      return;
+    }
 
-  if (loading) {
+    // 3. Если не нашли, диспатчим HTTP-запрос
+    dispatch(fetchOrderByNumber(number))
+      .unwrap()
+      .then((fetchedOrder: any) => {
+        if (!fetchedOrder) {
+          setIsOrderNotFound(true);
+        } else {
+          setLocalOrder(fetchedOrder);
+        }
+      })
+      .catch(() => setIsOrderNotFound(true));
+  }, [number, location.state?.order, orders, dispatch]);
+
+  // Пока идёт загрузка
+  if (!localOrder && isLoading) {
     return (
       <div className={`${styles['feed-details__wrapper']}`}>
         <div className={`${styles['feed-details']} width_100`}>
@@ -100,7 +65,8 @@ const FeedDetails = () => {
     );
   }
 
-  if (error || !currentOrder) {
+  // Если ошибка или заказ не найден
+  if (isOrderNotFound || (!localOrder && error)) {
     return (
       <div className={`${styles['feed-details__wrapper']}`}>
         <div className={`${styles['feed-details']} width_100`}>
@@ -110,30 +76,46 @@ const FeedDetails = () => {
     );
   }
 
+  if (!localOrder) {
+    // Нет ошибки, нет заказа, не идёт загрузка?
+    // Может, это состояние "загружаем", можно вернуть "Загрузка..." или пустой div
+    return null;
+  }
+
+  // -------------------------------------------------
+  // Подсчёт и отображение ингредиентов
+  // -------------------------------------------------
+  const price = useMemo(() => {
+    return localOrder.ingredients.reduce((total: number, id: string) => {
+      const ingredient = ingredients.find((item) => item._id === id);
+      return ingredient ? total + ingredient.price : total;
+    }, 0);
+  }, [localOrder.ingredients, ingredients]);
+
+  const statusLabel = localOrder.status === 'done'
+    ? 'Выполнен'
+    : localOrder.status === 'pending'
+    ? 'В работе'
+    : 'Создан';
+
   return (
     <div className={`${styles['feed-details__wrapper']}`}>
       <div className={`${styles['feed-details']} width_100`}>
         <div className="text-align_center text text_type_digits-default mb-10">
-          #{currentOrder.number}
+          #{localOrder.number}
         </div>
-        <div className="text text_type_main-medium mb-3">{currentOrder.name}</div>
-        <div
-          className={`${styles['feed-details__status--ready']} text text_type_main-default mb-15`}
-        >
-          {currentOrder.status === 'done'
-            ? 'Выполнен'
-            : currentOrder.status === 'pending'
-            ? 'В работе'
-            : 'Создан'}
+        <div className="text text_type_main-medium mb-3">
+          {localOrder.name}
+        </div>
+        <div className={`${styles['feed-details__status--ready']} text text_type_main-default mb-15`}>
+          {statusLabel}
         </div>
         <div className="text text_type_main-medium mb-6">Состав:</div>
         <div className="mb-10">
           <CustomScrollBar>
             <div className={`${styles['feed-details__ingredients']}`}>
-              {currentOrder.ingredients.map((ingredientId: string, index: number) => {
-                const ingredient = ingredients.find(
-                  (item) => item._id === ingredientId
-                );
+              {localOrder.ingredients.map((ingredientId: string, index: number) => {
+                const ingredient = ingredients.find((item) => item._id === ingredientId);
                 if (!ingredient) return null;
 
                 return (
@@ -156,8 +138,7 @@ const FeedDetails = () => {
                       {ingredient.name}
                     </div>
                     <div className="display_flex align-items_center text text_type_digits-default">
-                      1 x {ingredient.price}{" "}
-                      <CurrencyIcon className="ml-2" type="primary" />
+                      1 x {ingredient.price} <CurrencyIcon className="ml-2" type="primary" />
                     </div>
                   </div>
                 );
@@ -167,13 +148,10 @@ const FeedDetails = () => {
         </div>
         <div className="display_flex justify-content_space-between">
           <div className="text text_type_main-default">
-            {new Date(currentOrder.createdAt).toLocaleString()}
+            {new Date(localOrder.createdAt).toLocaleString()}
           </div>
           <div className="display_flex align-items_center text text_type_digits-default">
-            {currentOrder.ingredients.reduce((total: number, id: string) => {
-              const ingredient = ingredients.find((item) => item._id === id);
-              return ingredient ? total + ingredient.price : total;
-            }, 0)}
+            {price}
             <CurrencyIcon className="ml-2" type="primary" />
           </div>
         </div>
