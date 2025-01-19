@@ -31,7 +31,7 @@ export const fetchOrderByNumber = createAsyncThunk<
         method: 'GET',
       });
       return response.order;
-    } catch (error: any) {
+    } catch (error) {
       return thunkAPI.rejectWithValue('Не удалось загрузить заказ');
     }
   }
@@ -51,6 +51,8 @@ const ordersReducer = createReducer<OrdersState>(initialState, (builder) => {
       state[key].orders = orders;
       state[key].total = total;
       state[key].totalToday = totalToday;
+      state[key].loading = false;
+      state[key].error = null;
     })
     .addCase(fetchOrderByNumber.pending, (state, action) => {
       const key = action.meta.arg.key;

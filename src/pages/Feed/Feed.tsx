@@ -30,7 +30,7 @@ const Feed = () => {
     });
   };
 
-  const renderOrderColumns = (columns: any[], className: string) =>
+  const renderOrderColumns = (columns: any[], className: string = '') =>
     columns.map((column, colIndex) => (
       <div key={colIndex} className="feed-numbers__column mr-4">
         {column.map((order: Order) => (
@@ -100,7 +100,7 @@ const Feed = () => {
 
                       <div className="display_flex justify-content_space-between">
                         <div className="display_flex">
-                          {order.ingredients.slice(0, 5).map((ingredientId: any, index: number) => (
+                          {order.ingredients.slice(0, 5).map((ingredientId: string, index: number) => (
                             <div key={index} className={`${styles['ingredients__item']} position_relative`}>
                               <div
                                 className={`${styles['ingredients__image']} position_absolute display_flex justify-content_center align-items_center`}
@@ -156,7 +156,7 @@ const Feed = () => {
                 <div className="feed-numbers__list">
                   <div className="text text_type_main-medium mb-6">В работе</div>
                   <div className="feed-numbers__list-body display_flex">
-                    {renderOrderColumns(createdColumns, styles['feed-numbers__ready'])}
+                    {renderOrderColumns(createdColumns)}
                   </div>
                 </div>
               </div>

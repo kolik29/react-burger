@@ -10,6 +10,7 @@ import useLogout from '../../hooks/useLogout';
 import { useEffect } from 'react';
 import { UserOrderDetails } from '../../components/FeedDetails/FeedDetails';
 import { useAppDispatch, useAppSelector } from '../../services/hooks';
+import { Order } from '../../types/Order';
 
 const Orders = () => {
   const navigate = useNavigate();
@@ -110,7 +111,7 @@ const Orders = () => {
 
                       <div className="display_flex justify-content_space-between">
                         <div className="display_flex">
-                          {order.ingredients.slice(0, 5).map((ingredientId: any, index: number) => {
+                          {order.ingredients.slice(0, 5).map((ingredientId: string, index: number) => {
                             return (
                               <div
                                 key={index}
