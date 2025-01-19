@@ -3,6 +3,7 @@ import { IIngredient } from "../types/Ingredient";
 
 export const setSelectedIngredients = createAction<IIngredient>('burgerConstructor/setSelectedIngredients');
 export const removeSelectedIngredients = createAction<number>('burgerConstructor/removeSelectedIngredients');
+export const clearAllIngredients = createAction('burgerConstructor/clearAllIngredients');
 export const reorderSelectedIngredients = createAction<IIngredient[]>('burgerConstructor/reorderSelectedIngredients'); // Новое действие для обновления порядка
 
 const initialState: IIngredient[] = [];
@@ -27,6 +28,9 @@ export const burgerConstructorReducer = createReducer<IIngredient[]>(initialStat
       return state.filter((ingredient: IIngredient, index: number) => {
         return index !== action.payload || ingredient.type === 'bun';
       });
+    })
+    .addCase(clearAllIngredients, () => {
+      return [];
     })
     .addCase(reorderSelectedIngredients, (state: IIngredient[], action: PayloadAction<IIngredient[]>) => {
       const currentBuns = state.filter((ingredient: IIngredient) => ingredient.type === 'bun');

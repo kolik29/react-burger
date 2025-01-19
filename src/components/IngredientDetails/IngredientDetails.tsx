@@ -1,10 +1,10 @@
 import React from 'react';
 import styles from './IngredientDetails.module.css';
-import { useSelector } from 'react-redux';
 import { IIngredient } from '../../types/Ingredient';
+import { useAppSelector } from '../../services/hooks';
 
 const IngredientDetails: React.FC = () => {
-  const ingredient: IIngredient | null = useSelector((state: { currentIngredient: IIngredient | null }) => state.currentIngredient);
+  const ingredient: IIngredient | null = useAppSelector((state: { currentIngredient: IIngredient | null }) => state.currentIngredient);
 
   let sessionIngredient: IIngredient | null = null;
   if (!ingredient) {

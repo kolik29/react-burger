@@ -1,4 +1,4 @@
-import React from 'react';
+import { useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import styles from './Modal.module.css';
 import { CloseIcon } from '@ya.praktikum/react-developer-burger-ui-components';
@@ -8,7 +8,7 @@ import ModalOverlay from '../ModalOverlay/ModalOverlay';
 const Modal: React.FC<IModal> = ({ isModalOpen, onClose, children }) => {
   const modalRoot = document.getElementById('modal-root');
 
-  React.useEffect(() => {
+  useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         onClose();

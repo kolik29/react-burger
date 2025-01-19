@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../services/store";
+import { RootState } from "../../services/store";
 import { checkAndRefreshTokens } from "../../services/authReducer";
 import { IProtectedRouteElement } from "../../types/ProtectedRouteElement";
+import { useAppDispatch, useAppSelector } from "../../services/hooks";
 
 const ProtectedRouteElement: React.FC<IProtectedRouteElement> = ({ children }) => {
-  const { accessToken, refreshToken: storedRefreshToken } = useSelector(
+  const { accessToken, refreshToken: storedRefreshToken } = useAppSelector(
     (state: RootState) => state.auth
   );
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
   const [isTokenChecked, setIsTokenChecked] = useState(false);
 
   useEffect(() => {

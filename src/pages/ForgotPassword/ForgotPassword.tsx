@@ -1,13 +1,12 @@
 import React from 'react';
 import { Button, EmailInput } from '@ya.praktikum/react-developer-burger-ui-components';
 import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../../services/store'; // Типизированный dispatch
-import { resetPassword, setForgotPasswordCompleted } from '../../services/authReducer'; // Новый thunk
+import { resetPassword, setForgotPasswordCompleted } from '../../services/authReducer';
+import { useAppDispatch } from '../../services/hooks';
 
 const ForgotPassword = () => {
   const [email, setEmail] = React.useState('');
-  const dispatch = useDispatch<AppDispatch>(); // Используем типизированный dispatch
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const handleChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value);

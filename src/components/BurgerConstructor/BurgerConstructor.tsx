@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { Button, ConstructorElement, CurrencyIcon, DragIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import styles from './BurgerConstructor.module.css';
 import { IIngredient } from '../../types/Ingredient';
@@ -6,14 +6,14 @@ import CustomScrollbar from '../CustomScrollbar/CustomScrollbar.tsx';
 import OrderDetails from '../OrderDetails/OrderDetails.tsx';
 import { useModal } from '../../hooks/useModal.tsx';
 import Modal from '../Modal/Modal.tsx';
-import { useDispatch, useSelector } from 'react-redux';
 import { setOrder } from '../../services/orderReducer.tsx';
 import { useDrop, useDrag } from 'react-dnd';
-import { setSelectedIngredients, removeSelectedIngredients, reorderSelectedIngredients } from '../../services/burgerConstructorReducer.tsx';
+import { setSelectedIngredients, removeSelectedIngredients, reorderSelectedIngredients, clearAllIngredients } from '../../services/burgerConstructorReducer.tsx';
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
 import { submitOrder } from '../../services/submitOrder.tsx';
-import { AppDispatch, RootState } from '../../services/store.tsx';
+import { RootState } from '../../services/store.tsx';
+import { useAppDispatch, useAppSelector } from '../../services/hooks.tsx';
 
 const BunConstructorElement: React.FC<{ bun: IIngredient; type: 'top' | 'bottom' }> = ({ bun, type }) => (
   <div className="position_relative display_flex align-items_center justify-content_end pl-8 pr-4">
@@ -61,7 +61,7 @@ const IngredientConstructorElement: React.FC<{ ingredient: IIngredient; index: n
 };
 
 const IngredientListWrapper: React.FC<{ ingredients: IIngredient[]; onRemove: (index: number) => void }> = ({ ingredients, onRemove }) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const moveIngredient = (fromIndex: number, toIndex: number) => {
     const updatedIngredients = [...ingredients];
@@ -86,9 +86,9 @@ const IngredientListWrapper: React.FC<{ ingredients: IIngredient[]; onRemove: (i
 };
 
 const BurgerConstructor: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const data = useSelector((state: RootState) => state.burgerConstructor) as IIngredient[];
+  const data = useAppSelector((state: RootState) => state.burgerConstructor) as IIngredient[];
   const { isModalOpen, openModal, closeModal } = useModal();
   const [, dropIngredientsRef] = useDrop({
     accept: 'ingredient',
@@ -96,6 +96,10 @@ const BurgerConstructor: React.FC = () => {
       dispatch(setSelectedIngredients({ ...ingredient, key: uuidv4() }));
     }
   });
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const hasBun: boolean = data.some((item: IIngredient) => item.type === 'bun');
 
   const handleSubmitOrder = () => {
     let accessToken = localStorage.getItem('accessToken');
@@ -110,8 +114,14 @@ const BurgerConstructor: React.FC = () => {
       accessToken = `Bearer ${accessToken}`;
     }
 
+    if (!hasBun) {
+      alert('Добавьте булоку в заказ!');
+      return;
+    }
+
     const ingredientIds = data.map((ingredient: IIngredient) => ingredient._id);
 
+    setIsLoading(true);
     dispatch(submitOrder({ ingredientIds, accessToken }))
       .unwrap()
       .then(() => {
@@ -120,16 +130,20 @@ const BurgerConstructor: React.FC = () => {
       .catch((error) => {
         console.error(error);
         alert('Ошибка при создании заказа');
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
   const handleCloseModal = () => {
     closeModal();
     dispatch(setOrder(''));
+    dispatch(clearAllIngredients());
   };
 
   const handleRemoveIngredient = (index: number) => {
-    dispatch(removeSelectedIngredients(index));
+    dispatch(removeSelectedIngredients(index + 1));
   };
 
   const totalPrice = useMemo(() => {
@@ -177,8 +191,8 @@ const BurgerConstructor: React.FC = () => {
               </bdi>
             </div>
             <div className="create-order">
-              <Button htmlType="button" type="primary" size="large" onClick={handleSubmitOrder}>
-                Оформить заказ
+              <Button htmlType="button" type="primary" size="large" onClick={handleSubmitOrder} disabled={isLoading}>
+                {isLoading ? 'Оформляем...' : 'Оформить заказ'}
               </Button>
             </div>
           </div>

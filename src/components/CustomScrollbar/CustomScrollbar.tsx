@@ -1,17 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styles from './CustomScrollBar.module.css';
-import { useDispatch } from 'react-redux';
 import { setTab } from '../../services/scrollbarTabsReduces';
+import { useAppDispatch } from '../../services/hooks';
 
 const CustomScrollBar: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const dispath = useDispatch();
+  const dispath = useAppDispatch();
 
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [scrollHeight, setScrollHeight] = React.useState(0);
   const [scrollTop, setScrollTop] = React.useState(0);
   const [containerHeight, setContainerHeight] = React.useState(0);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const container = containerRef.current;
 
     if (container) {

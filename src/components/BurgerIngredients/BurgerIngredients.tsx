@@ -1,15 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Tab, CurrencyIcon, Counter } from '@ya.praktikum/react-developer-burger-ui-components';
 import styles from './BurgerIngredients.module.css';
 import { IIngredient } from '../../types/Ingredient';
 import CustomScrollBar from '../CustomScrollbar/CustomScrollbar.tsx';
 import { useNavigate, useLocation } from 'react-router-dom';
-import IngredientDetails from '../IngredientDetails/IngredientDetails.tsx';
-import Modal from '../Modal/Modal.tsx';
-import { useDispatch, useSelector } from 'react-redux';
-import { setCurrentIngredient, resetCurrentIngredient } from '../../services/currentIngredientReducer.tsx';
+import { setCurrentIngredient } from '../../services/currentIngredientReducer.tsx';
 import { useDrag } from 'react-dnd';
 import { RootState } from '../../services/store.tsx';
+import { useAppDispatch, useAppSelector } from '../../services/hooks.tsx';
 
 const IngredientItem: React.FC<{ item: IIngredient, count: number, onClick: () => void }> = ({ item, count, onClick }) => {
   const [, reactRef] = useDrag({
@@ -41,12 +39,12 @@ const IngredientItem: React.FC<{ item: IIngredient, count: number, onClick: () =
 };
 
 const BurgerIngredients: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const data = useSelector((state: RootState): IIngredient[] => state.ingredients);
-  const burgerConstructor = useSelector((state: RootState): IIngredient[] => state.burgerConstructor);
-  const currentTab = useSelector((state: RootState): string => state.scrollbarTab);
+  const data = useAppSelector((state: RootState): IIngredient[] => state.ingredients);
+  const burgerConstructor = useAppSelector((state: RootState): IIngredient[] => state.burgerConstructor);
+  const currentTab = useAppSelector((state: RootState): string => state.scrollbarTab);
 
   const [ingredientCounts, setIngredientCounts] = React.useState<{ [id: string]: number }>({});
 
@@ -68,7 +66,7 @@ const BurgerIngredients: React.FC = () => {
     }
   };
   
-  React.useEffect(() => {
+  useEffect(() => {
     if (burgerConstructor.length) {
       const counts: { [id: string]: number } = burgerConstructor.reduce(
         (acc: { [id: string]: number }, ingredient: IIngredient) => {
@@ -78,6 +76,22 @@ const BurgerIngredients: React.FC = () => {
         {}
       );
       
+      setIngredientCounts(counts);
+    }
+  }, [burgerConstructor]);
+
+  useEffect(() => {
+    if (burgerConstructor.length === 0) {
+      setIngredientCounts({});
+    } else {
+      const counts: { [id: string]: number } = burgerConstructor.reduce(
+        (acc: { [id: string]: number }, ingredient: IIngredient) => {
+          acc[ingredient._id] = (acc[ingredient._id] || 0) + 1;
+          return acc;
+        },
+        {}
+      );
+  
       setIngredientCounts(counts);
     }
   }, [burgerConstructor]);
