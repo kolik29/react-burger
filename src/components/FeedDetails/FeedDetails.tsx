@@ -83,7 +83,13 @@ export const FeedDetails: React.FC<IFeedDetailsProps> = ({ feedKey }) => {
   }, [groupedIngredients]);
 
   if (!order) {
-    return <div className="text text_type_main-medium">Заказ не найден</div>;
+    return (
+      <div className={`${styles['feed-details__wrapper']}`}>
+        <div className={`${styles['feed-details']} width_100`}>
+          <div className="text text_type_main-medium mr-10">Заказ не найден</div>
+        </div>
+      </div>
+    );
   }
 
   return (
