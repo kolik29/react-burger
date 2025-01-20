@@ -7,19 +7,19 @@ import { useParams } from 'react-router-dom';
 import { fetchOrderByNumber, selectOrderByNumber } from '../../services/ordersReducer';
 import { useAppDispatch, useAppSelector } from '../../services/hooks';
 import { IFeedDetailsProps } from '../../types/FeedDetailsProps';
-import { IIngredient } from '../../types/Ingredient';
+import { WS_CONNECT, WS_DISCONNECT } from '../../actions/WsActions';
 
 export const AllOrderDeatils: React.FC = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch({ 
-      type: 'WS_CONNECT', 
+      type: WS_CONNECT, 
       payload: { path: '/orders/all', key: 'all' } 
     });
 
     return () => {
-      dispatch({ type: 'WS_DISCONNECT' });
+      dispatch({ type: WS_DISCONNECT });
     };
   }, [dispatch]);
 
@@ -33,12 +33,12 @@ export const UserOrderDetails: React.FC = () => {
     const token = localStorage.getItem('accessToken')?.replace('Bearer ', '');
 
     dispatch({ 
-      type: 'WS_CONNECT', 
+      type: WS_CONNECT, 
       payload: { path: '/orders', key: 'user', accessToken: token } 
     });
 
     return () => {
-      dispatch({ type: 'WS_DISCONNECT' });
+      dispatch({ type: WS_DISCONNECT });
     };
   }, [dispatch]);
 

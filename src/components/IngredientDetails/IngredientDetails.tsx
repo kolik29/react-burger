@@ -4,7 +4,7 @@ import { IIngredient } from '../../types/Ingredient';
 import { useAppSelector } from '../../services/hooks';
 
 const IngredientDetails: React.FC = () => {
-  const ingredient: IIngredient | null = useAppSelector((state: { currentIngredient: IIngredient | null }) => state.currentIngredient);
+  const ingredient = useAppSelector((state: { currentIngredient: IIngredient | null }) => state.currentIngredient);
 
   let sessionIngredient: IIngredient | null = null;
   if (!ingredient) {

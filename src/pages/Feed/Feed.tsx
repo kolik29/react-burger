@@ -10,6 +10,7 @@ import { calculateOrderPrice, getIngredientImage } from '../../utils/orders';
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../services/hooks';
 import { Order } from '../../types/Order';
+import { WS_CONNECT, WS_DISCONNECT } from '../../actions/WsActions';
 
 const Feed = () => {
   const navigate = useNavigate();
@@ -62,10 +63,10 @@ const Feed = () => {
   };
 
   useEffect(() => {
-    dispatch({ type: 'WS_CONNECT', payload: { path: '/orders/all', key: 'all' } });
+    dispatch({ type: WS_CONNECT, payload: { path: '/orders/all', key: 'all' } });
 
     return () => {
-      dispatch({ type: 'WS_DISCONNECT' });
+      dispatch({ type: WS_DISCONNECT });
     };
   }, [dispatch])
 

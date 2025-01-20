@@ -11,6 +11,7 @@ import { useEffect } from 'react';
 import { UserOrderDetails } from '../../components/FeedDetails/FeedDetails';
 import { useAppDispatch, useAppSelector } from '../../services/hooks';
 import { Order } from '../../types/Order';
+import { WS_CONNECT, WS_DISCONNECT } from '../../actions/WsActions';
 
 const Orders = () => {
   const navigate = useNavigate();
@@ -38,10 +39,10 @@ const Orders = () => {
   const accessToken = localStorage.getItem('accessToken');
   
   useEffect(() => {
-    dispatch({ type: 'WS_CONNECT', payload: { path: '/orders', accessToken: accessToken, key: 'user' } });
+    dispatch({ type: WS_CONNECT, payload: { path: '/orders', accessToken: accessToken, key: 'user' } });
   
     return () => {
-      dispatch({ type: 'WS_DISCONNECT' });
+      dispatch({ type: WS_DISCONNECT });
     };
   }, [dispatch])
 
