@@ -18,7 +18,7 @@ const Feed = () => {
 
   const data = useAppSelector((state: RootState) => state.orders.all);
 
-  const orders = data.orders;
+  const orders = data.orders.filter((order) => !!order);
   const total = data.total;
   const totalToday = data.totalToday;
 

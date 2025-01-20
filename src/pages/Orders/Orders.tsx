@@ -19,7 +19,7 @@ const Orders = () => {
   
   const data = useAppSelector((state: RootState) => state.orders.user);
 
-  const orders = data.orders;
+  const orders = data.orders.filter((order) => !!order);
 
   const handleOrderClick = (order: Order) => {
     navigate(`/profile/orders/${order.number}`, {
