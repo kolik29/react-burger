@@ -1,7 +1,6 @@
 import { CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import CustomScrollBar from '../CustomScrollbar/CustomScrollbar';
 import styles from './FeedDetails.module.css';
-import { RootState } from '../../services/store';
 import { useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { fetchOrderByNumber, selectOrderByNumber } from '../../services/ordersReducer';
@@ -50,8 +49,8 @@ export const FeedDetails: React.FC<IFeedDetailsProps> = ({ feedKey }) => {
   const orderNumber = Number(number);
   const dispatch = useAppDispatch();
 
-  const order = useAppSelector((state: RootState) => selectOrderByNumber(state.orders[feedKey].orders, orderNumber));
-  const ingredients = useAppSelector((state: RootState) => state.ingredients);
+  const order = useAppSelector((state) => selectOrderByNumber(state.orders[feedKey].orders, orderNumber));
+  const ingredients = useAppSelector((state) => state.ingredients);
   
   useEffect(() => {
     if (!order) {

@@ -42,9 +42,9 @@ const BurgerIngredients: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const data = useAppSelector((state: RootState): IIngredient[] => state.ingredients);
-  const burgerConstructor = useAppSelector((state: RootState): IIngredient[] => state.burgerConstructor);
-  const currentTab = useAppSelector((state: RootState): string => state.scrollbarTab);
+  const data = useAppSelector((state): IIngredient[] => state.ingredients);
+  const burgerConstructor = useAppSelector((state): IIngredient[] => state.burgerConstructor);
+  const currentTab = useAppSelector((state): string => state.scrollbarTab);
 
   const [ingredientCounts, setIngredientCounts] = React.useState<{ [id: string]: number }>({});
 

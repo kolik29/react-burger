@@ -88,7 +88,7 @@ const IngredientListWrapper: React.FC<{ ingredients: IIngredient[]; onRemove: (i
 const BurgerConstructor: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const data = useAppSelector((state: RootState) => state.burgerConstructor) as IIngredient[];
+  const data = useAppSelector((state) => state.burgerConstructor) as IIngredient[];
   const { isModalOpen, openModal, closeModal } = useModal();
   const [, dropIngredientsRef] = useDrop({
     accept: 'ingredient',

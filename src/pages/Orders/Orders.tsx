@@ -3,7 +3,6 @@ import styles from './Orders.module.css';
 import { CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import CustomScrollBar from '../../components/CustomScrollbar/CustomScrollbar';
 import Modal from '../../components/Modal/Modal';
-import { RootState } from '../../services/store';
 import { useModal } from '../../hooks/useModal';
 import { calculateOrderPrice, getIngredientImage } from '../../utils/orders';
 import useLogout from '../../hooks/useLogout';
@@ -18,7 +17,7 @@ const Orders = () => {
   const location = useLocation();
   const dispatch = useAppDispatch();
   
-  const data = useAppSelector((state: RootState) => state.orders.user);
+  const data = useAppSelector((state) => state.orders.user);
 
   const orders = data.orders.filter((order) => !!order);
 
@@ -28,7 +27,7 @@ const Orders = () => {
     });
   };
 
-  const ingredients = useAppSelector((state: RootState) => state.ingredients);
+  const ingredients = useAppSelector((state) => state.ingredients);
 
   const { isModalOpen } = useModal();
 

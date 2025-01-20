@@ -3,7 +3,6 @@ import styles from './Feed.module.css';
 import CustomScrollBar from '../../components/CustomScrollbar/CustomScrollbar';
 import Modal from '../../components/Modal/Modal';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { RootState } from '../../services/store';
 import { useModal } from '../../hooks/useModal';
 import { AllOrderDeatils } from '../../components/FeedDetails/FeedDetails';
 import { calculateOrderPrice, getIngredientImage } from '../../utils/orders';
@@ -17,13 +16,13 @@ const Feed = () => {
   const location = useLocation();
   const dispatch = useAppDispatch();
 
-  const data = useAppSelector((state: RootState) => state.orders.all);
+  const data = useAppSelector((state) => state.orders.all);
 
   const orders = data.orders.filter((order) => !!order);
   const total = data.total;
   const totalToday = data.totalToday;
 
-  const ingredients = useAppSelector((state: RootState) => state.ingredients);
+  const ingredients = useAppSelector((state) => state.ingredients);
 
   const handleOrderClick = (order: Order) => {
     navigate(`/feed/${order.number}`, {
