@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import styles from './Profile.module.css';
 import { Button, EmailInput, Input, PasswordInput } from '@ya.praktikum/react-developer-burger-ui-components';
-import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { AppDispatch } from '../../services/store';
-import { useDispatch } from 'react-redux';
-import { getUser, logoutUser, updateUser } from '../../services/authReducer';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { getUser, updateUser } from '../../services/authReducer';
+import useLogout from '../../hooks/useLogout';
+import { useAppDispatch } from '../../services/hooks';
 
 const Profile = () => {
   const [email, setEmail] = useState('');
@@ -12,24 +12,11 @@ const Profile = () => {
   const [name, setName] = useState('');
 
   const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
 
   const handleChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value);
   const handleChangePassword = (e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value);
   const handleChangeName = (e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value);
-
-  const handleLogout = (e: React.MouseEvent) => {
-    e.preventDefault();
-    dispatch(logoutUser())
-      .unwrap()
-      .then(() => {
-        navigate('/login');
-      })
-      .catch((error) => {
-        console.error('Ошибка при выходе:', error);
-        alert('Ошибка при выходе из системы');
-      });
-  };
 
   useEffect(() => {
     dispatch(getUser())
@@ -41,6 +28,7 @@ const Profile = () => {
       .catch((error) => {
         console.error('Ошибка при получении пользователя:', error);
         alert('Ошибка при загрузке данных пользователя');
+        navigate('/login');
       });
   }, [dispatch]);
 
@@ -83,7 +71,7 @@ const Profile = () => {
                 >
                   История заказов
                 </NavLink>
-                <NavLink to="/login" className={styles['navlink'] + ' text text_type_main-medium'} onClick={handleLogout}>
+                <NavLink to="/login" className={styles['navlink'] + ' text text_type_main-medium'} onClick={useLogout}>
                   Выход
                 </NavLink>
               </div>

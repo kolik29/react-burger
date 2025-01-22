@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { Button, Input, PasswordInput } from '@ya.praktikum/react-developer-burger-ui-components';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import { AppDispatch } from '../../services/store';
 import { resetUserPassword } from '../../services/authReducer';
+import { useAppDispatch, useAppSelector } from '../../services/hooks';
 
 const ResetPassword = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
 
   const [password, setPassword] = useState('');
   const [token, setToken] = useState('');
@@ -15,7 +14,7 @@ const ResetPassword = () => {
   const handleChangePassword = (e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value);
   const handleChangeToken = (e: React.ChangeEvent<HTMLInputElement>) => setToken(e.target.value);
 
-  const forgotPasswordCompleted: boolean = useSelector((state: { auth: { forgotPasswordCompleted: boolean } }): boolean => state.auth.forgotPasswordCompleted);
+  const forgotPasswordCompleted: boolean = useAppSelector((state): boolean => state.auth.forgotPasswordCompleted);
 
   if (!forgotPasswordCompleted) {
     return <Navigate to="/forgot-password" replace />;

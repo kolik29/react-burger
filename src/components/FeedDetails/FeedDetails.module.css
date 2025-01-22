@@ -1,0 +1,43 @@
+.feed-details__wrapper {
+    margin: 60px 40px 40px;
+}
+
+.feed-details {
+    max-width: 640px;
+}
+
+.feed-details__status--ready {
+    color: #00CCCC;
+}
+
+.feed-details__ingredients {
+    max-height: 336px;
+}
+
+.feed-details__ingredients-item {
+    grid-template-columns: auto 1fr auto;
+}
+
+.ingredients-item__image {
+    background: linear-gradient(63.18deg, #801AB3 0%, #4C4CFF 100%);
+    border-radius: 100px;
+    padding: 2px;
+    width: 64px;
+    height: 64px;
+}
+
+.ingredients-item__image-inner {
+    background: #131316;
+    border-radius: 100px;
+    width: 62px;
+    height: 62px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    overflow: hidden;
+}
+
+.ingredients-item__image-inner img {
+    object-fit: contain;
+    width: 175%;
+}

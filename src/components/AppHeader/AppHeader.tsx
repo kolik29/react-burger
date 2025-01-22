@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState } from 'react';
 import styles from './AppHeader.module.css';
 import { Logo, BurgerIcon, ListIcon, ProfileIcon, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import { useNavigate } from 'react-router-dom';
@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 const AppHeader = () => {
   const navigate = useNavigate();
 
-  const [isButtonHovered, setIsButtonHovered] = React.useState({
+  const [isButtonHovered, setIsButtonHovered] = useState({
     'constructor': false,
     'orders': false,
     'profile': false
@@ -45,6 +45,7 @@ const AppHeader = () => {
             extraClass="display_flex align-items_center text text_type_main-default text_color_inactive ml-2 p-5"
             onMouseEnter={() => handleMouseEnter('orders')}
             onMouseLeave={() => handleMouseLeave('orders')}
+            onClick={() => navigate('/feed')}
           >
             <ListIcon type={isButtonHovered.orders ? 'primary' : 'secondary'} className={styles.button_transition} />
             <span className='ml-2'>
@@ -52,7 +53,7 @@ const AppHeader = () => {
             </span>
           </Button>
         </nav>
-        <div className='display_flex align-items_center'>
+        <div className='display_flex align-items_center' onClick={() => navigate('/')}>
           <Logo />
         </div>
         <nav className='display_flex align-items_center justify-content_end'>

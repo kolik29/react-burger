@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import AppHeader from '../AppHeader/AppHeader';
 import { fetchIngredients } from '../../services/ingredientsReducer';
-import { useDispatch } from 'react-redux';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import Login from '../../pages/Login/Login';
 import Main from '../../pages/Main/Main';
@@ -13,10 +12,14 @@ import IngredientDetailsPage from '../../pages/IngredientDetailsPage/IngredientD
 import ProtectedRouteElement from '../ProtectedRouteElement/ProtectedRouteElement';
 import Modal from '../Modal/Modal';
 import IngredientDetails from '../IngredientDetails/IngredientDetails';
-import { AppDispatch } from '../../services/store';
+import Feed from '../../pages/Feed/Feed';
+import { AllOrderDeatils, UserOrderDetails } from '../FeedDetails/FeedDetails';
+import FeedDetailsPage from '../../pages/FeedDetailsPage/FeedDetailsPage';
+import Orders from '../../pages/Orders/Orders';
+import { useAppDispatch } from '../../services/hooks';
 
 const App: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const location = useLocation();
@@ -52,7 +55,7 @@ const App: React.FC = () => {
           path="/profile/orders"
           element={
             <ProtectedRouteElement>
-              <Profile />
+              <Orders />
             </ProtectedRouteElement>
           }
         />
@@ -60,7 +63,9 @@ const App: React.FC = () => {
           path="/profile/orders/:number"
           element={
             <ProtectedRouteElement>
-              <Profile />
+              <FeedDetailsPage>
+                <UserOrderDetails />
+              </FeedDetailsPage>
             </ProtectedRouteElement>
           }
         />
@@ -68,12 +73,51 @@ const App: React.FC = () => {
           path="/ingredients/:id"
           element={<IngredientDetailsPage />}
         />
+
+        <Route
+          path="/feed"
+          element={<Feed />}
+        />
+
+        <Route
+          path="/feed/:number"
+          element={
+            <FeedDetailsPage>
+              <AllOrderDeatils />
+            </FeedDetailsPage>
+          }
+        />
       </Routes>
 
       {background && (
-        <Modal isModalOpen={true} onClose={handleCloseModal}>
-          <IngredientDetails />
-        </Modal>
+        <Routes>
+          <Route
+            path="/ingredients/:id"
+            element={
+              <Modal isModalOpen={true} onClose={handleCloseModal}>
+                <IngredientDetails />
+              </Modal>
+            }
+          />
+          <Route
+            path="/feed/:number"
+            element={
+              <Modal isModalOpen={true} onClose={handleCloseModal}>
+                <AllOrderDeatils />
+              </Modal>
+            }
+          />
+          <Route
+            path="/profile/orders/:number"
+            element={
+              <ProtectedRouteElement>
+                <Modal isModalOpen={true} onClose={handleCloseModal}>
+                  <UserOrderDetails />
+                </Modal>
+              </ProtectedRouteElement>
+            }
+          />
+        </Routes>
       )}
     </>
   );
