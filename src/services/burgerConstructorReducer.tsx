@@ -6,7 +6,7 @@ export const removeSelectedIngredients = createAction<number>('burgerConstructor
 export const clearAllIngredients = createAction('burgerConstructor/clearAllIngredients');
 export const reorderSelectedIngredients = createAction<IIngredient[]>('burgerConstructor/reorderSelectedIngredients'); // Новое действие для обновления порядка
 
-const initialState: IIngredient[] = [];
+export const initialState: IIngredient[] = [];
 
 export const burgerConstructorReducer = createReducer<IIngredient[]>(initialState, (builder) => {
   builder

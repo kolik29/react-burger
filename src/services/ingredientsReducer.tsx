@@ -4,7 +4,7 @@ import { request } from "../utils/request";
 
 export const setIngredients = createAction<IIngredient[]>('ingredients/get');
 
-const initialState: IIngredient[] = [];
+export const initialState: IIngredient[] = [];
 
 export const ingredientsReducer = createReducer<IIngredient[]>(
   initialState,

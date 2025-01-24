@@ -2,12 +2,12 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { IAuth } from '../types/Auth';
 import { request } from '../utils/request';
 
-const loadAuthState = () => ({
+export const loadAuthState = () => ({
   accessToken: localStorage.getItem('accessToken') || null,
   refreshToken: localStorage.getItem('refreshToken') || null,
 });
 
-const initialState: IAuth = {
+export const initialState: IAuth = {
   ...loadAuthState(),
   user: null,
   isLoading: false,

@@ -4,7 +4,7 @@ import { IIngredient } from "../types/Ingredient";
 export const setCurrentIngredient = createAction<IIngredient>('currentIngredient/setCurrentIngredient');
 export const resetCurrentIngredient = createAction('currentIngredient/resetCurrentIngredient');
 
-const initialState: IIngredient | null = null;
+export const initialState: IIngredient | null = null;
 
 export const currentIngredientReducer = createReducer<IIngredient | null>(
   initialState,

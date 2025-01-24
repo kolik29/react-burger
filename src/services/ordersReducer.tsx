@@ -3,7 +3,7 @@ import { request } from '../utils/request';
 import { Order, OrdersState } from '../types/Order';
 import { WS_ON_MESSAGE } from '../actions/WsActions';
 
-const initialState: OrdersState = {
+export const initialState: OrdersState = {
   all: {
     orders: [],
     total: 0,
