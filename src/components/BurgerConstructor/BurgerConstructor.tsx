@@ -12,7 +12,6 @@ import { setSelectedIngredients, removeSelectedIngredients, reorderSelectedIngre
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
 import { submitOrder } from '../../services/submitOrder.tsx';
-import { RootState } from '../../services/store.tsx';
 import { useAppDispatch, useAppSelector } from '../../services/hooks.tsx';
 
 const BunConstructorElement: React.FC<{ bun: IIngredient; type: 'top' | 'bottom' }> = ({ bun, type }) => (
@@ -161,6 +160,7 @@ const BurgerConstructor: React.FC = () => {
       <div
         className="display_flex justify-content_center align-items_center width_100 pt-10 pb-10"
         ref={dropIngredientsRef}
+        data-testid="burger-constructor-dropzone"
       >
         <div className="text text_type_main-default text_color_inactive text-align_center">Нет ингредиентов</div>
       </div>
@@ -175,6 +175,7 @@ const BurgerConstructor: React.FC = () => {
       <section
         className={`${styles['burger-ingredients']} max-width_600px width_100 display_grid height_auto overflow_hidden mt-25`}
         ref={dropIngredientsRef}
+        data-testid="burger-constructor-dropzone"
       >
         <div className={`display_grid ${styles.burger} overflow_hidden height_100`}>
           {currentBuns && <BunConstructorElement bun={currentBuns} type="top" />}
