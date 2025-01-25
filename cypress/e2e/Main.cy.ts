@@ -1,12 +1,14 @@
+const testUrl = 'http://localhost:5173';
+
 describe('Проверка заказа', () => {
   it('должен открыть окно ингредиента', () => {
-    cy.visit('http://localhost:5173');
+    cy.visit(testUrl);
     cy.get('[data-testid="ingredient-643d69a5c3f7b9001cfa093c"]').click();
     cy.contains('Детали ингредиента').should('be.visible');
   });
 
   it('должен перетащить булку в конструктор', () => {
-    cy.visit('http://localhost:5173');
+    cy.visit(testUrl);
     
     dndIngredients('ingredient-643d69a5c3f7b9001cfa093c');
 
@@ -14,7 +16,7 @@ describe('Проверка заказа', () => {
   });
 
   it('должен авторизоваться', () => {
-    cy.visit('http://localhost:5173/login');
+    cy.visit(testUrl + '/login');
 
     auth();
 
@@ -25,7 +27,7 @@ describe('Проверка заказа', () => {
   });
 
   it('должен создать заказ', () => {
-    cy.visit('http://localhost:5173/login');
+    cy.visit(testUrl + '/login');
 
     auth();
     
