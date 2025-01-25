@@ -10,7 +10,7 @@ export const currentIngredientReducer = createReducer<IIngredient | null>(
   initialState,
   (builder) => {
     builder
-      .addCase(setCurrentIngredient, (state: IIngredient | null, action: PayloadAction<IIngredient>): IIngredient => {
+      .addCase(setCurrentIngredient, (_state: IIngredient | null, action: PayloadAction<IIngredient>): IIngredient => {
         return action.payload;
       })
       .addCase(resetCurrentIngredient, (): null => {

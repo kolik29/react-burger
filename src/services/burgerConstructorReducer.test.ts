@@ -11,7 +11,7 @@ import { IIngredient } from '../types/Ingredient';
 
 describe('burgerConstructorReducer', () => {
   it('должен возвращать initial state', () => {
-    const state = burgerConstructorReducer(undefined, { type: undefined });
+    const state = burgerConstructorReducer(undefined, { type: '@@INIT' });
     expect(state).toEqual(initialState);
   });
 

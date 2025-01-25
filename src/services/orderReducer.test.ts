@@ -3,7 +3,7 @@ import { initialState, orderReducer, setOrder } from './orderReducer';
 
 describe('orderReducer', () => {
   it('должен возвращать initalState', () => {
-    const state = orderReducer(undefined, { type: undefined });
+    const state = orderReducer(undefined, { type: '@@INIT' });
     expect(state).toBe(initialState);
   });
 
@@ -18,7 +18,7 @@ describe('orderReducer', () => {
     const firstPayload = '123456';
     const secondPayload = '654321';
 
-    let state = orderReducer(undefined, { type: undefined });
+    let state = orderReducer(undefined, { type: '@@INIT' });
     expect(state).toBe(initialState);
 
     state = orderReducer(state, setOrder(firstPayload));

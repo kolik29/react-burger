@@ -8,7 +8,7 @@ export const orderReducer = createReducer<string>(
   initialState,
   (builder) => {
     builder
-      .addCase(setOrder, (state: string, action: PayloadAction<string>): string => {
+      .addCase(setOrder, (_state: string, action: PayloadAction<string>): string => {
         return action.payload;
       })
   }

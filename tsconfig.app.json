@@ -21,7 +21,7 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
 
-    "types": ["@types/node"]
+    "types": ["@types/node", "cypress"]
   },
   "include": ["src"]
 }

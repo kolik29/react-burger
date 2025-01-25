@@ -7,7 +7,7 @@ import {
 
 describe('scrollbarTabsReducer', () => {
   it('должен возвращать initial state', () => {
-    const state = scrollbarTabsReducer(undefined, { type: undefined });
+    const state = scrollbarTabsReducer(undefined, { type: '@@INIT' });
     expect(state).toBe(initialState);
   });
 

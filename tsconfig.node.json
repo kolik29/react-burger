@@ -19,7 +19,7 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
 
-    "types": ["@types/node"]
+    "types": ["@types/node", "cypress"]
   },
   "include": ["vite.config.ts"]
 }

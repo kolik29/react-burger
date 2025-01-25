@@ -1,1 +1,1 @@
-{"root":["./cypress.config.ts","./cypress/e2e/main.cy.ts","./cypress/support/commands.ts","./cypress/support/component.ts","./cypress/support/e2e.ts"],"errors":true,"version":"5.6.3"}
+{"root":["./cypress.config.ts","./cypress/e2e/main.cy.ts","./cypress/support/commands.ts","./cypress/support/component.ts","./cypress/support/e2e.ts"],"version":"5.6.3"}

@@ -9,7 +9,7 @@ import { IIngredient } from '../types/Ingredient';
 
 describe('currentIngredientReducer', () => {
   it('должен возвращать initial state', () => {
-    const state = currentIngredientReducer(undefined, { type: undefined });
+    const state = currentIngredientReducer(undefined, { type: '@@INIT' });
     expect(state).toEqual(initialState);
   });
 

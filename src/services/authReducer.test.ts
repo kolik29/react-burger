@@ -1,8 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import authReducer, { checkAndRefreshTokens, getUser, initialState, logoutUser, registerUser, resetPassword, setForgotPasswordCompleted } from './authReducer';
+import authReducer, { checkAndRefreshTokens, getUser, initialState, logoutUser, registerUser, setForgotPasswordCompleted } from './authReducer';
 import { configureStore } from '@reduxjs/toolkit';
-import { server } from '../mocks/server';
-import { http } from 'msw';
 
 const setupStore = () =>
   configureStore({
@@ -20,7 +18,7 @@ describe('authSlice', () => {
   });
 
   it('должен возвращать initial state', () => {
-    const state = authReducer(undefined, { type: undefined });
+    const state = authReducer(undefined, { type: '@@INIT' });
     expect(state).toBe(initialState);
   });
 

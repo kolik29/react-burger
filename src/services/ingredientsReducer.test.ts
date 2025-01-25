@@ -3,7 +3,7 @@ import { initialState, ingredientsReducer } from './ingredientsReducer';
 
 describe('ingredientsReducer', () => {
     it('должен возвращать initial state', () => {
-        const state = ingredientsReducer(undefined, { type: undefined });
+        const state = ingredientsReducer(undefined, { type: '@@INIT' });
         expect(state).toBe(initialState);
     });
 

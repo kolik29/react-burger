@@ -8,7 +8,7 @@ import { Order } from '../types/Order';
 
 describe('ordersReducer', () => {
   it('должен возвращать initial state', () => {
-    const state = ordersReducer(undefined, { type: undefined });
+    const state = ordersReducer(undefined, { type: '@@INIT' });
     expect(state).toEqual(initialState);
   });
 
@@ -70,7 +70,7 @@ describe('ordersReducer', () => {
 
   it('должен обрабатывать rejected состояние fetchOrderByNumber', () => {
     const action = fetchOrderByNumber.rejected(
-      { message: 'Ошибка при загрузке заказа' },
+      new Error('Ошибка при загрузке заказа'),
       '',
       { number: 123, key: 'user' }
     );

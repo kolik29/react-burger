@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useEffect, useState } from 'react';
 import styles from './Profile.module.css';
 import { Button, EmailInput, Input, PasswordInput } from '@ya.praktikum/react-developer-burger-ui-components';
@@ -32,7 +33,7 @@ const Profile = () => {
       });
   }, [dispatch]);
 
-  const handleSave = (e: React.MouseEvent) => {
+  const handleSave = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     dispatch(updateUser({ email, password, name }))

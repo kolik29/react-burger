@@ -8,7 +8,7 @@ export const scrollbarTabsReducer = createReducer<string>(
   initialState,
   (builder) => {
     builder
-    .addCase(setTab, (state: string, action: PayloadAction<string>): string => {
+    .addCase(setTab, (_state: string, action: PayloadAction<string>): string => {
       return action.payload;
     })
   }

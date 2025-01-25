@@ -2,7 +2,7 @@ import { http, HttpResponse } from 'msw';
 
 export const handlers = [
   http.post('https://norma.nomoreparties.space/api/auth/register', async ({ request }) => {
-    const { email, name } = await request.json<{ email: string; name: string }>();
+    const { email, name } = await request.json() as { email: string; name: string };
     
     return HttpResponse.json({
       user: { id: '12345', email, name },
@@ -14,7 +14,7 @@ export const handlers = [
   }),
   
   http.post('https://norma.nomoreparties.space/api/auth/login', async ({ request }) => {
-    const { email, password } = await request.json<{ email: string; password: string }>();
+    const { email, password } = await request.json() as { email: string; password: string };;
     
     if (email === 'user@example.com' && password === 'password123') {
       return HttpResponse.json(
@@ -34,7 +34,7 @@ export const handlers = [
   }),
   
   http.post('https://norma.nomoreparties.space/api/auth/logout', async ({ request }) => {
-    const { token } = await request.json<{ token: string }>();
+    const { token } = await request.json() as { token: string };
     
     if (token === 'refresh-token-123') {
       return HttpResponse.json(
@@ -50,7 +50,7 @@ export const handlers = [
   }),
   
   http.post('https://norma.nomoreparties.space/api/auth/token', async ({ request }) => {
-    const { refreshToken } = await request.json<{ refreshToken: string }>();
+    const { refreshToken } = await request.json() as { refreshToken: string };
     
     if (refreshToken === 'refresh-token-123') {
       return HttpResponse.json(
@@ -90,7 +90,7 @@ export const handlers = [
   
   http.patch('https://norma.nomoreparties.space/api/auth/user', async ({ request }) => {
     const authHeader = request.headers.get('Authorization');
-    const { name, email } = await request.json<{ name: string; email: string }>();
+    const { name, email } = await request.json() as { name: string; email: string };
     
     if (authHeader === 'access-token-123' || authHeader === 'new-access-token-456') {
       return HttpResponse.json(

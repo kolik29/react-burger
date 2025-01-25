@@ -1,7 +1,6 @@
 import { createAction, createAsyncThunk, createReducer, PayloadAction } from '@reduxjs/toolkit';
 import { request } from '../utils/request';
 import { Order, OrdersState } from '../types/Order';
-import { WS_ON_MESSAGE } from '../actions/WsActions';
 
 export const initialState: OrdersState = {
   all: {
@@ -39,6 +38,12 @@ export const fetchOrderByNumber = createAsyncThunk<
 );
 
 export const setOrders = createAction<{ orders: Order[]; total: number; totalToday: number; key: string }>('orders/setOrders');
+export const WS_ON_MESSAGE = createAction<{
+  orders: Order[];
+  total: number;
+  totalToday: number;
+  key: string;
+}>('WS_ON_MESSAGE');
 
 const ordersReducer = createReducer<OrdersState>(initialState, (builder) => {
   builder
@@ -55,22 +60,19 @@ const ordersReducer = createReducer<OrdersState>(initialState, (builder) => {
       state[key].loading = false;
       state[key].error = null;
     })
-    .addCase(
-      WS_ON_MESSAGE,
-      (state, action: PayloadAction<{ orders: Order[]; total: number; totalToday: number; key: string }>) => {
-        const { orders, total, totalToday, key } = action.payload;
+    .addCase(WS_ON_MESSAGE, (state, action: PayloadAction<{ orders: Order[]; total: number; totalToday: number; key: string }>) => {
+      const { orders, total, totalToday, key } = action.payload;
 
-        if (!state[key]) {
-          state[key] = { orders: [], total: 0, totalToday: 0, loading: false, error: null };
-        }
-
-        state[key].orders = orders;
-        state[key].total = total;
-        state[key].totalToday = totalToday;
-        state[key].loading = false;
-        state[key].error = null;
+      if (!state[key]) {
+        state[key] = { orders: [], total: 0, totalToday: 0, loading: false, error: null };
       }
-    )
+
+      state[key].orders = orders;
+      state[key].total = total;
+      state[key].totalToday = totalToday;
+      state[key].loading = false;
+      state[key].error = null;
+    })
     .addCase(fetchOrderByNumber.pending, (state, action) => {
       const key = action.meta.arg.key;
 
