@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import styles from './CustomScrollBar.module.css';
-import { setTab } from '../../services/scrollbarTabsReduces';
+import { setTab } from '../../services/scrollbarTabsReducer';
 import { useAppDispatch } from '../../services/hooks';
 
 const CustomScrollBar: React.FC<{ children: React.ReactNode }> = ({ children }) => {

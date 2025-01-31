@@ -6,7 +6,6 @@ import CustomScrollBar from '../CustomScrollbar/CustomScrollbar.tsx';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { setCurrentIngredient } from '../../services/currentIngredientReducer.tsx';
 import { useDrag } from 'react-dnd';
-import { RootState } from '../../services/store.tsx';
 import { useAppDispatch, useAppSelector } from '../../services/hooks.tsx';
 
 const IngredientItem: React.FC<{ item: IIngredient, count: number, onClick: () => void }> = ({ item, count, onClick }) => {
@@ -21,6 +20,7 @@ const IngredientItem: React.FC<{ item: IIngredient, count: number, onClick: () =
       className={`${styles.ingredients_item} mr-3 ml-3 mb-8 position_relative`}
       onClick={onClick}
       ref={reactRef}
+      data-testid={`ingredient-${item._id}`}
     >
       {count > 0 && <Counter count={count} size="default" />}
       <div className='display_flex justify-content_center'>

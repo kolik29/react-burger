@@ -1,0 +1,15 @@
+{
+    "extends": "./tsconfig.app.json",
+  
+    "compilerOptions": {
+      "module": "esnext",
+      "target": "es2020",
+      "moduleResolution": "node",
+    },
+    "include": [
+      "cypress.config.ts",
+      "cypress/**/*.ts",
+      "cypress/**/*.tsx"
+    ]
+  }
+  

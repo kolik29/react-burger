@@ -4,13 +4,13 @@ import { request } from "../utils/request";
 
 export const setIngredients = createAction<IIngredient[]>('ingredients/get');
 
-const initialState: IIngredient[] = [];
+export const initialState: IIngredient[] = [];
 
 export const ingredientsReducer = createReducer<IIngredient[]>(
   initialState,
   (builder) => {
     builder
-      .addCase(setIngredients, (state: IIngredient[], action: PayloadAction<IIngredient[]>): IIngredient[] => {
+      .addCase(setIngredients, (_state: IIngredient[], action: PayloadAction<IIngredient[]>): IIngredient[] => {
         return action.payload;
       })
   }

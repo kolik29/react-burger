@@ -7,13 +7,13 @@ export const useAppDispatch: () => AppDispatch = useDispatch;
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 export const useAuthTokenChecker = () => {
-    const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
   
-    useEffect(() => {
-      const interval = setInterval(() => {
-        dispatch(checkAndRefreshTokens());
-      }, 60 * 1000);
-  
-      return () => clearInterval(interval);
-    }, [dispatch]);
-  };
+  useEffect(() => {
+    const interval = setInterval(() => {
+      dispatch(checkAndRefreshTokens());
+    }, 60 * 1000);
+    
+    return () => clearInterval(interval);
+  }, [dispatch]);
+};

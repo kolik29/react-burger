@@ -2,13 +2,13 @@ import { createAction, createReducer, PayloadAction } from "@reduxjs/toolkit";
 
 export const setOrder = createAction<string>('order/setOrder');
 
-const initialState: string = '';
+export const initialState: string = '';
 
 export const orderReducer = createReducer<string>(
   initialState,
   (builder) => {
     builder
-      .addCase(setOrder, (state: string, action: PayloadAction<string>): string => {
+      .addCase(setOrder, (_state: string, action: PayloadAction<string>): string => {
         return action.payload;
       })
   }

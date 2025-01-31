@@ -16,11 +16,12 @@ import Feed from '../../pages/Feed/Feed';
 import { AllOrderDeatils, UserOrderDetails } from '../FeedDetails/FeedDetails';
 import FeedDetailsPage from '../../pages/FeedDetailsPage/FeedDetailsPage';
 import Orders from '../../pages/Orders/Orders';
-import { useAppDispatch } from '../../services/hooks';
+import { useAppDispatch, useAuthTokenChecker } from '../../services/hooks';
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  useAuthTokenChecker();
 
   const location = useLocation();
   const background = location.state?.background;
